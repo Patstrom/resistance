@@ -48,6 +48,8 @@ CREATE TABLE votes (
 CREATE TABLE posts(
     id          serial primary key,
     author      integer references Users,
+    game_id     integer references Games,
+    mission_id  integer references Missions,
     body        text not null,
     created_at  timestamp default current_timestamp
 );
