@@ -1,10 +1,10 @@
-CREATE TABLE Users(
+CREATE TABLE users(
     id      serial primary key,
-    name    text not null,
+    name    text not null unique,
     pwhash  text not null
 );
 
-CREATE TABLE Games(
+CREATE TABLE games(
     id      serial primary key,
     name    text not null,
     creator integer references Users,
@@ -12,40 +12,40 @@ CREATE TABLE Games(
     is_over boolean not null default false
 );
 
-CREATE TABLE Players(
+CREATE TABLE players(
     id      serial primary key,
     game_id integer references Games,
     user_id integer references Users,
     is_spy  boolean default false
 );
 
-CREATE TABLE Missions(
+CREATE TABLE missions(
     id              serial primary key,
     game_id         integer references Games,
     fails_required  smallint check(fails_required between 1 and 2),
     people_required smallint check(people_required between 2 and 5)
 );
 
-CREATE TABLE Turns(
+CREATE TABLE turns(
     id          serial primary key,
     mission_id  integer references Missions,
     leader      integer references Players
 );
 
-CREATE TABLE Nominees(
+CREATE TABLE nominees(
     turn_id     integer references Turns,
     player_id   integer references Players,
-    UNIQUE(turn_id, player_id)
+    primary key(turn_id, player_id)
 );
 
-CREATE TABLE Votes (
+CREATE TABLE votes (
     turn_id     integer references Turns,
     player_id   integer references Players,
     approve     boolean not null,
     primary key (turn_id, player_id)
 );
 
-CREATE TABLE Posts(
+CREATE TABLE posts(
     id          serial primary key,
     author      integer references Users,
     body        text not null,
