@@ -32,9 +32,8 @@ ul {
 }
 
 #chat li {
-    margin: 0 0 .2em 0;
+    margin: 0 0 .1em 0;
 }
-
 
 .post {
     display: block;
@@ -48,3 +47,11 @@ ul {
     padding-top: 1em;
     font-size: x-small;
 }
+
+.post .author:after {
+    content: ' ';
+    width: 80em;
+    display: block;
+    border: 2px solid #d0d0d0;
+}
+
