@@ -6,8 +6,8 @@ engine = create_engine('postgresql://patrik@localhost/resistance', convert_unico
 Base = declarative_base()
 Base.metadata.reflect(engine)
 
-from models import *
-
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
+def load_session():
+    metadata = Base.metadata
+    Session = sessionmaker(bind=engine)
+    session = scoped_session(Session)
+    return session
