@@ -8,6 +8,10 @@ class Games(Base):
     __tablename__ = 'games'
     __table_args__ = {'autoload':True}
 
+class Players(Base):
+    __tablename__ = 'players'
+    __table_args__ = {'autoload':True}
+
 class Missions(Base):
     __tablename__ = 'missions'
     __table_args__ = {'autoload':True}
@@ -22,4 +26,8 @@ class Nominees(Base):
 
 class Votes(Base):
     __tablename__ = 'votes'
+    __table_args__ = {'autoload':True}
+
+class Posts(Base):
+    __tablename__ = 'posts'
     __table_args__ = {'autoload':True}
