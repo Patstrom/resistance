@@ -15,8 +15,8 @@
         <h1 class=header>Available Games</h1>
             <ul>
             {% for game in games %}
-                {% if !game.is_over %}
-                    <li><a href="{{ url_for('game', game_name=game.name) }}">
+                {% if not game.started %}
+                    <li><a href="{{ url_for('game', game=game.name) }}">
                         {{ game.name }}
                     </a></li>
                 {% endif %}
@@ -28,7 +28,7 @@
         <h1 class=header>All Games</h1>
             <ul>
             {% for game in games %}
-                <li><a href="{{ url_for('game', game_name=game.name) }}">
+                <li><a href="{{ url_for('game', game=game.name) }}">
                     {{ game.name }}
                 </a></li>
             {% endfor %}

@@ -4,8 +4,13 @@ from flask import abort
 
 app = Flask(__name__)
 
+from database import load_session
+db_session = load_session()
+from models import *
+
 @app.route("/")
 def index():
+    games = db_session.query(Games).all()
     return render_template("index.html", games=games)
 
 @app.route("/games/<game>")
