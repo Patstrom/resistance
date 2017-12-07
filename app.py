@@ -26,6 +26,6 @@ if __name__ == "__main__":
     from database import load_session
     db_session = load_session()
     from models import *
-    for item in db_session.query(Games).all():
-        print(item)
+    for item in db_session.query(Users).all():
+        print("{} : {} : {}".format(item.id, item.name, item.pwhash))
     app.run()
