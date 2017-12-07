@@ -1,3 +1,4 @@
+/* Common styling between all pages */
 body {
     margin: 0 auto;
     max-width: 50em;
@@ -7,6 +8,7 @@ body {
     color: #444;
 }
 
+/* All the headers */
 h1 {
     margin-top: 1em;
     padding-top: 1em;
@@ -23,18 +25,23 @@ ul {
     margin: 0;
 }
 
+/* We want a horizontal player-list in game.html */
 #player-list ul > li {
     display: inline-block;
 }
 
+/* With a | as seperator */
 #player-list ul > li:not(:first-child):before {
     content: " | ";
 }
 
+
+/* The game.html chat section */
 #chat li {
     margin: 0 0 .1em 0;
 }
 
+/* The post object, which consists of an author, a creation date and some text */
 .post {
     display: block;
     width: 80em;
@@ -42,12 +49,14 @@ ul {
     text-decoration: none;
 }
 
+/* Author should be super small */
 .author {
     margin-top: 1em;
     padding-top: 1em;
     font-size: x-small;
 }
 
+/* Add a pretty border under the author */
 .post .author:after {
     content: ' ';
     width: 80em;
