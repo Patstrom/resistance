@@ -1,0 +1,50 @@
+body {
+    margin: 0 auto;
+    max-width: 50em;
+    font-family: "Helvetica", "Arial", sans-serif;
+    line-height: 1.5;
+    padding: 4em 1em;
+    color: #444;
+}
+
+h1 {
+    margin-top: 1em;
+    padding-top: 1em;
+    color: #9999ff;
+}
+
+p {
+    font-size: medium;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#player-list ul > li {
+    display: inline-block;
+}
+
+#player-list ul > li:not(:first-child):before {
+    content: " | ";
+}
+
+#chat li {
+    margin: 0 0 .2em 0;
+}
+
+
+.post {
+    display: block;
+    width: 80em;
+    padding: .2em .8em;
+    text-decoration: none;
+}
+
+.author {
+    margin-top: 1em;
+    padding-top: 1em;
+    font-size: x-small;
+}

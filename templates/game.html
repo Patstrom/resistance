@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Game</title>
+ 
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <div id=player-list>
+            <h1 class=header>Players</h1>
+            <ul>
+            {% for player in players %}
+                <li>
+                    {{ player }}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div id=chat>
+            <h1>Chat</h1>
+            <ul>
+            {% for post in posts %}
+                <li>
+                    <div class=post>
+                        <p class=author>{{ post.user }} @ {{ post.created }}</p>
+                        <p>{{post.body}}</p>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+ 
+    </div>
+
+</body>
+ 
+</html>
