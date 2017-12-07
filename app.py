@@ -15,8 +15,8 @@ def index():
 
 @app.route("/games/<game>")
 def game(game=None):
-    players = [] # The names of the participating players
-    posts = [] # All posts for the game
+    players = db_session.query(Players).filter(Players.game_id == game).all()
+    posts = db_session.query(Posts).filter(Posts.game_id == game).all()
     return render_template("game.html", players=players, posts=posts)
 
 @app.errorhandler(404)
