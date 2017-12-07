@@ -1,4 +1,4 @@
-# Avalon
+# The Resistance
 
 The Resistance is a game that I sometimes play with my friends.
 
@@ -11,6 +11,6 @@ with web design and front-end. I was wrong. But now I am stuck.
 pip install --user flask
 ```
 
-```
+```Bash
 python main.py
 ```
