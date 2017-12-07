@@ -23,7 +23,9 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 if __name__ == "__main__":
-    from database import db_session
-    for item in db_session.query(Games.name):
+    from database import load_session
+    db_session = load_session()
+    from models import *
+    for item in db_session.query(Games).all():
         print(item)
     app.run()
