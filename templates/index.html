@@ -10,6 +10,16 @@
 <body>
  
     <div class="container">
+        <div class=game-list>
+        <h1 class=header>Your Games</h1>
+            <ul>
+            {% for game in usergames %}
+                <li><a href="{{ url_for('game', game=game.id) }}">
+                    {{ game.name }}
+                </a></li>
+            {% endfor %}
+            </ul>
+        </div>
 
         <div class=game-list>
         <h1 class=header>Available Games</h1>
