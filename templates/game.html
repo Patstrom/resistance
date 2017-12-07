@@ -13,7 +13,7 @@
         <div id=player-list>
             <h1 class=header>Players</h1>
             <ul>
-            {% for player in players %}
+            {% for player in game.players %}
                 <li>
                     {{ player }}
                 </li>
@@ -24,10 +24,10 @@
         <div id=chat>
             <h1>Chat</h1>
             <ul>
-            {% for post in posts %}
+            {% for post in game.posts|sort(attribute='created_at') %}
                 <li>
                     <div class=post>
-                        <p class=author>{{ post.user }} @ {{ post.created }}</p>
+                        <p class=author>{{ post.user }} @ {{ post.created_at.strftime("%y-%m-%d %H:%M") }}</p>
                         <p>{{post.body}}</p>
                     </div>
                 </li>
