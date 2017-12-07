@@ -3,6 +3,7 @@ from flask import render_template
 from flask import abort
 
 app = Flask(__name__)
+app.config.from_envvar('FLASK_ENV_FILE')
 
 from database import load_session
 db_session = load_session()
@@ -11,7 +12,7 @@ from models import *
 @app.route("/")
 def index():
     games = db_session.query(Games).all()
-    return render_template("index.html", games=games)
+    return render_template("index.html", games=games, usergames=games)
 
 @app.route("/games/<game>")
 def game(game=None):
@@ -28,9 +29,4 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 if __name__ == "__main__":
-    from database import load_session
-    db_session = load_session()
-    from models import *
-    for item in db_session.query(Users).all():
-        print("{} : {} : {}".format(item.id, item.name, item.pwhash))
     app.run()
