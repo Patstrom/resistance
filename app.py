@@ -15,7 +15,6 @@ def index():
     if 'user' in session:
         user = session['user']
         usergames = db_session.query(Games).join(Players).filter(Players.user_id == user).all()
-        print(usergames)
 
     games = db_session.query(Games).all()
 
