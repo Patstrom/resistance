@@ -37,30 +37,53 @@ ul {
 
 
 /* The game.html chat section */
-#chat li {
-    margin: 0 0 .1em 0;
+#chat {
+    width: 80em;
+}
+
+/* The form for posting message */
+#chat #post-message-form {
+    width: inherit;
+    box-sizing:border-box;
+}
+
+#chat #post-message-form  input[type=text] {
+    display: inline-block;
+    width: inherit;
+    height: 25em;
+}
+
+#chat #post-message-form  input[type=submit] {
+    float: right;
+    cursor: pointer;
+    border: none;
+}
+
+#chat #post-message-form:after {
+    content: ' ';
+    width: inherit;
+    display: block;
+    border: 2px solid #d0d0d0;
 }
 
 /* The post object, which consists of an author, a creation date and some text */
-.post {
+#chat li {
     display: block;
-    width: 80em;
-    padding: .2em .8em;
+    width: inherit;
     text-decoration: none;
 }
 
 /* Author should be super small */
-.author {
+#chat li .author {
     margin-top: 1em;
     padding-top: 1em;
     font-size: x-small;
 }
 
 /* Add a pretty border under the author */
-.post .author:after {
+#chat li .author:after {
     content: ' ';
-    width: 80em;
+    width: inherit;
     display: block;
     border: 2px solid #d0d0d0;
 }
-
