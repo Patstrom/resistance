@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session, request, redirect, url_for
 from flask import render_template
 from flask import abort
 
@@ -11,8 +11,33 @@ from models import *
 
 @app.route("/")
 def index():
+    usergames = []
+    if 'user' in session:
+        user = session['user']
+        usergames = db_session.query(Games).join(Players).filter(Players.user_id == user).all()
+        print(usergames)
+
     games = db_session.query(Games).all()
-    return render_template("index.html", games=games, usergames=games)
+
+    return render_template("index.html", games=games, usergames=usergames)
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        user_id = db_session.query(Users.id).filter(Users.name == username).scalar()
+        print(user_id)
+        if user_id is not None:
+            session['user'] = user_id
+        return redirect(url_for('index'))
+    else:
+        return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('index'))
 
 @app.route("/games/<game>")
 def game(game=None):
