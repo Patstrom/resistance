@@ -40,7 +40,7 @@ def logout():
 
 @app.route("/games/<game>")
 def game(game=None):
-    players = db_session.query(Players).filter(Players.game_id == game).all()
+    players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Posts).filter(Posts.game_id == game).all()
     return render_template("game.html", players=players, posts=posts)
 
