@@ -38,11 +38,29 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
 
+
 @app.route("/games/<game>")
 def game(game=None):
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
-    posts = db_session.query(Posts).filter(Posts.game_id == game).all()
-    return render_template("game.html", players=players, posts=posts)
+    posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
+    print(posts)
+    return render_template("game.html", players=players, posts=posts, game=game)
+
+@app.route("/games/<game>/submit-post", methods=["GET", "POST"])
+def submit_post(game=None):
+    if request.method == "GET":
+        return redirect(url_for('game', game=game))
+    else:
+        body = request.form["body"]
+        author = session['user']
+        current_mission = db_session.query(Missions.id).join(Games).filter(Games.id == game).order_by(Missions.id.desc()).scalar()
+        post = Posts(author = author,
+                game_id = game,
+                mission_id = current_mission,
+                body = body)
+        db_session().add(post)
+        db_session().commit()
+        return redirect(url_for('game', game=game))
 
 @app.errorhandler(404)
 def page_not_found(error):
