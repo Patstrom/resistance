@@ -25,6 +25,10 @@ ul {
     margin: 0;
 }
 
+.container {
+    width: 80em;
+}
+
 /* We want a horizontal player-list in game.html */
 #player-list ul > li {
     display: inline-block;
@@ -38,7 +42,7 @@ ul {
 
 /* The game.html chat section */
 #chat {
-    width: 80em;
+    width: inherit;
 }
 
 /* The form for posting message */
