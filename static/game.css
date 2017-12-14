@@ -1,0 +1,62 @@
+/* We want a horizontal player-list in game.html */
+#player-list ul > li {
+    display: inline-block;
+}
+
+/* With a | as seperator */
+#player-list ul > li:not(:first-child):before {
+    content: " | ";
+}
+
+
+/* The game.html chat section */
+#chat {
+    width: inherit;
+}
+
+/* The form for posting message */
+#chat #post-message-form {
+    width: inherit;
+    box-sizing:border-box;
+}
+
+#chat #post-message-form  input[type=text] {
+    display: inline-block;
+    width: inherit;
+    height: 25em;
+}
+
+#chat #post-message-form  input[type=submit] {
+    float: right;
+    cursor: pointer;
+    border: none;
+}
+
+#chat #post-message-form:after {
+    content: ' ';
+    width: inherit;
+    display: block;
+    border: 2px solid #d0d0d0;
+}
+
+/* The post object, which consists of an author, a creation date and some text */
+#chat li {
+    display: block;
+    width: inherit;
+    text-decoration: none;
+}
+
+/* Author should be super small */
+#chat li .author {
+    margin-top: 1em;
+    padding-top: 1em;
+    font-size: x-small;
+}
+
+/* Add a pretty border under the author */
+#chat li .author:after {
+    content: ' ';
+    width: inherit;
+    display: block;
+    border: 2px solid #d0d0d0;
+}
