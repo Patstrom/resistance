@@ -31,7 +31,8 @@ CREATE TABLE turns(
     id          serial primary key,
     mission_id  integer not null references Missions,
     leader      integer not null references Players,
-    approved    boolean default false
+    approved    boolean default false,
+    unique(mission_id, leader)
 );
 
 CREATE TABLE nominees(
