@@ -85,6 +85,14 @@ def missions(game=None):
         for turn in turns:
             print("Turn\nid: {} mission_id: {} leader: {} approved: {}".format(turn.id, turn.mission_id, turn.leader, turn.approved))
 
+            turn_votes = db_session.query(TurnVotes).filter(TurnVotes.turn_id == turn.id).all()
+            for turn_vote in turn_votes:
+                print("player:{} voted {}".format(turn_vote.player_id, "approve" if turn_vote.approve else "reject"))
+
+            print("Nominees\n")
+            nominees = db_session.query(Nominees.player_id).filter(Nominees.turn_id == turn.id).all()
+            print([nominee.player_id for nominee in nominees])
+
     return redirect(url_for('index'))
 
 
