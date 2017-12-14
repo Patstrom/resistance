@@ -27,6 +27,10 @@ class Missions(Base):
     __tablename__ = 'missions'
     __table_args__ = {'autoload':True}
 
+class MissionVotes(Base):
+    __tablename__ = 'mission_votes'
+    __table_args__ = {'autoload':True}
+
 class Turns(Base):
     __tablename__ = 'turns'
     __table_args__ = {'autoload':True}
@@ -35,9 +39,10 @@ class Nominees(Base):
     __tablename__ = 'nominees'
     __table_args__ = {'autoload':True}
 
-class Votes(Base):
-    __tablename__ = 'votes'
+class TurnVotes(Base):
+    __tablename__ = 'turn_votes'
     __table_args__ = {'autoload':True}
+
 
 class Posts(Base):
     __tablename__ = 'posts'
