@@ -14,22 +14,22 @@ CREATE TABLE games(
 
 CREATE TABLE players(
     id      serial primary key,
-    game_id integer references Games,
-    user_id integer references Users,
+    game_id integer not null references Games,
+    user_id integer not null references Users,
     is_spy  boolean default false
 );
 
 CREATE TABLE missions(
     id              serial primary key,
-    game_id         integer references Games,
+    game_id         integer not null references Games,
     fails_required  smallint check(fails_required between 1 and 2),
     people_required smallint check(people_required between 2 and 5)
 );
 
 CREATE TABLE turns(
     id          serial primary key,
-    mission_id  integer references Missions,
-    leader      integer references Players
+    mission_id  integer not null references Missions,
+    leader      integer not null references Players,
 );
 
 CREATE TABLE nominees(
@@ -47,8 +47,8 @@ CREATE TABLE votes (
 
 CREATE TABLE posts(
     id          serial primary key,
-    author      integer references Users,
-    game_id     integer references Games,
+    author      integer not null references Users,
+    game_id     integer not null references Games,
     mission_id  integer references Missions,
     body        text not null,
     created_at  timestamp default current_timestamp
