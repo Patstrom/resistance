@@ -10,6 +10,11 @@
 <body>
  
     <div class="container">
+        <form method="post" id=create-game-form action={{ url_for('create_game') }}>
+            <input type=text name=game-name>
+            <input type=submit value="Create game">
+        </form>
+
         <div class=game-list>
         <h1 class=header>Your Games</h1>
             <ul>
@@ -24,7 +29,7 @@
         <div class=game-list>
         <h1 class=header>Available Games</h1>
             <ul>
-            {% for game in games %}
+            {% for game in games|sort(attribute='id', reverse=True) %}
                 {% if not game.started %}
                     <li><a href="{{ url_for('game', game=game.id) }}">
                         {{ game.name }}
@@ -37,7 +42,7 @@
         <div class=game-list>
         <h1 class=header>All Games</h1>
             <ul>
-            {% for game in games %}
+            {% for game in games|sort(attribute='id') %}
                 <li><a href="{{ url_for('game', game=game.id) }}">
                     {{ game.name }}
                 </a></li>

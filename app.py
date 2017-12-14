@@ -11,14 +11,13 @@ from models import *
 
 @app.route("/")
 def index():
-    usergames = []
+    games = db_session.query(Games).all()
     if 'user' in session:
         user = session['user']
         usergames = db_session.query(Games).join(Players).filter(Players.user_id == user).all()
-
-    games = db_session.query(Games).all()
-
-    return render_template("index.html", games=games, usergames=usergames)
+        return render_template('index_for_users.html', games=games, usergames=usergames)
+    else:
+        return render_template("index_for_anonymous.html", games=games)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -41,13 +40,37 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
 
+@app.route("/create-game", methods=["GET", "POST"])
+def create_game():
+    if request.method == "GET":
+        return redirect(url_for('index'))
+    else:
+        creator = session.get('user')
+        name = request.form["game-name"]
+        if creator is not None and not name.isspace():
+            # Create the game
+            game = Games(creator=creator,
+                    name = name)
+            db_session().add(game)
+            db_session().flush()
+
+            # Add the creator as a player
+            player = Players(game_id=game.id,
+                    user_id=creator)
+            db_session().add(player)
+            db_session().commit()
+
+            return redirect(url_for('game', game=game.id))
+
+    return redirect(url_for('index'))
 
 @app.route("/games/<game>")
 def game(game=None):
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
-    print(posts)
     return render_template("game.html", players=players, posts=posts, game=game)
+
+
 
 @app.route("/games/<game>/submit-post", methods=["GET", "POST"])
 def submit_post(game=None):
