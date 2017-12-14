@@ -35,21 +35,21 @@ CREATE TABLE turns(
 );
 
 CREATE TABLE nominees(
-    turn_id     integer references Turns,
-    player_id   integer references Players,
+    turn_id     integer not null references Turns,
+    player_id   integer not null references Players,
     primary key (turn_id, player_id)
 );
 
 CREATE TABLE turn_votes (
-    turn_id     integer references Turns,
-    player_id   integer references Players,
+    turn_id     integer not null references Turns,
+    player_id   integer not null references Players,
     approve     boolean not null,
     primary key (turn_id, player_id)
 );
 
 CREATE TABLE mission_votes(
-    mission_id  integer references Missions,
-    player_id   integer references Players,
+    mission_id  integer not null references Missions,
+    player_id   integer not null references Players,
     fail        boolean default false,
     primary key (mission_id, player_id)
 );
