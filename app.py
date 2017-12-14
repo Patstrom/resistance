@@ -52,7 +52,7 @@ def create_game():
             game = Games(creator=creator,
                     name = name)
             db_session().add(game)
-            db_session().flush()
+            db_session().flush() # Flush so sqlalchemy populates our game variable with id
 
             # Add the creator as a player
             player = Players(game_id=game.id,
@@ -69,6 +69,24 @@ def game(game=None):
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
     return render_template("game.html", players=players, posts=posts, game=game)
+
+@app.route("/games/<game>/missions")
+def missions(game=None):
+    # order_by id so missions[0] is the first one, missions[1] is the second one and so on.
+    missions = db_session.query(Missions).join(Games) \
+        .filter(Games.id == game).order_by(Missions.id.asc()).all()
+
+    for mission in missions:
+        print("Mission\nid: {} game_id: {}, fails_required: {} people_required: {} succes: {}" \
+                .format(mission.id, mission.game_id, mission.fails_required, mission.people_required, mission.success))
+        # order_by id so turns[0] is the first one, turns[1] is the second one and so on.
+        turns = db_session.query(Turns) \
+            .filter(Turns.mission_id == mission.id).order_by(Turns.id.asc()).all()
+        for turn in turns:
+            print("Turn\nid: {} mission_id: {} leader: {} approved: {}".format(turn.id, turn.mission_id, turn.leader, turn.approved))
+
+    return redirect(url_for('index'))
+
 
 
 
