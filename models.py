@@ -1,8 +1,19 @@
 from database import Base
+from passlib.hash import pbkdf2_sha256
 
 class Users(Base):
     __tablename__ = 'users'
     __table_args__ = {'autoload':True}
+
+    def __init__(username, password):
+        self.name = username.lower()
+        self.set_password(password)
+
+    def set_password(self, plaintext):
+        self.pwhash = pbkdf2_sha256.hash(plaintext)
+
+    def check_password(self, candidate):
+        return pbkdf2_sha256.verify(candidate, self.pwhash)
 
 class Games(Base):
     __tablename__ = 'games'

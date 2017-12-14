@@ -25,13 +25,16 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        user_id = db_session.query(Users.id).filter(Users.name == username).scalar()
-        print(user_id)
-        if user_id is not None:
-            session['user'] = user_id
-        return redirect(url_for('index'))
+        user = db_session.query(Users).filter(Users.name == username).scalar()
+
+        # Check if login is successful
+        if user is not None and user.check_password(password):
+            session['user'] = user.id
+            return redirect(url_for('index'))
+        else:
+            return render_template("login.html", failed=True)
     else:
-        return render_template("login.html")
+        return render_template("login.html", failed=False)
 
 @app.route("/logout")
 def logout():

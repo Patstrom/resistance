@@ -17,6 +17,10 @@
             <input type=submit value=Login>
         </form>
 
+        {% if failed %}
+        <p id=failed-login>Invalid credentials</p>
+        {% endif %}
+
     </div>
 
 </body>
