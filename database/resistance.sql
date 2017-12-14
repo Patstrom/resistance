@@ -48,11 +48,11 @@ CREATE TABLE turn_votes (
 );
 
 CREATE TABLE mission_votes(
-    mission_id  integer references Missions
+    mission_id  integer references Missions,
     player_id   integer references Players,
     fail        boolean default false,
     primary key (mission_id, player_id)
-)
+);
 
 CREATE TABLE posts(
     id          serial primary key,
