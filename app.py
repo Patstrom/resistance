@@ -64,7 +64,7 @@ def create_game():
 
     return redirect(url_for('index'))
 
-@app.route("/games/<game>")
+@app.route("/<game>")
 def game(game=None):
     user = session.get('user', None)
 
@@ -72,7 +72,7 @@ def game(game=None):
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
 
-    user_is_player = user in [player.id for (_, player) in players] # Will be false if use is None
+    user_is_player = user in [player.user_id for (_, player) in players] # Will be false if use is None
     (creator, game_has_started) = db_session.query(Games.creator, Games.started).filter(Games.id == game).one()
     if not game_has_started:
         return render_template('game_not_started.html', players=players, posts=posts, game=game,
@@ -108,9 +108,14 @@ def join_game(game=None):
         if user is None:
             return redirect(url_for('login'))
 
-        player = Player(game_id=game, user_id=user)
-        db_session().add(player)
-        db_session().commit()
+        players = db_session.query(Players).filter(Players.game_id == game).all()
+        user_is_player = user in [player.user_id for player in players]
+
+        # This check isn't neccesary if the user behaves
+        if not user_is_player:
+            player = Players(game_id=game, user_id=user)
+            db_session().add(player)
+            db_session().commit()
 
     return redirect(url_for('game', game=game))
 
