@@ -24,16 +24,24 @@
 
         <div id=current-turn>
             <h1 class=header>Current Turn</h1>
-            {{ mission.leader }} has nominated:<br>
-            <ul>
+            {% if nominees|length == 0 %}
+                {% if user_is_leader %}
+                <!-- nominee form -->
+                {% else %}
+                <p> {{ leader }} hasn't nominated a team yet</p>
+                {% endif %}
+            {% else %}
+            <p>{{ leader }} has nominated:</p>
+            <ul class=nominees>
                 {% for nominee in nominees %}
-                <li>{{ nominee }}</li>
+                <li>{{ nominee.name }}</li>
                 {% endfor %}
             </ul>
             <form method="post" id=turn-vote action={{ url_for('turn_vote', game=game) }}>
                 <input type=submit name=approve value=Approve>
                 <input type=submit name=reject value=Reject>
             </form>
+            {% endif %}
         </div>
 
         <div id=chat>

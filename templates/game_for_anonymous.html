@@ -24,12 +24,16 @@
 
         <div id=current-turn>
             <h1 class=header>Current Turn</h1>
-            {{ mission.leader }} has nominated:<br>
-            <ul>
+            {% if nominees|length == 0 %}
+                <p> {{ leader }} hasn't nominated a team yet</p>
+            {% else %}
+            <p>{{ leader }} has nominated:</p>
+            <ul class=nominess>
                 {% for nominee in nominees %}
-                <li>{{ nominee }}</li>
+                <li>{{ nominee.name }}</li>
                 {% endfor %}
             </ul>
+            {% endif %}
         </div>
 
         <div id=chat>
