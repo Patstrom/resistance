@@ -29,7 +29,7 @@
 
     <div id=chat>
         <h1>Chat</h1>
-        <p>Players will be able to post when the game has started</p>
+        <p>Players will be able to post when the creator has started the game</p>
         <ul>
         {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
             <li>
