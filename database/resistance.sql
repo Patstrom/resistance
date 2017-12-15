@@ -7,7 +7,7 @@ CREATE TABLE users(
 CREATE TABLE games(
     id      serial primary key,
     name    text not null,
-    creator integer references Users,
+    creator integer not null references Users,
     started boolean not null default false,
     is_over boolean not null default false
 );
@@ -51,7 +51,7 @@ CREATE TABLE turn_votes (
 CREATE TABLE mission_votes(
     mission_id  integer not null references Missions,
     player_id   integer not null references Players,
-    fail        boolean default false,
+    fail        boolean not null,
     primary key (mission_id, player_id)
 );
 
