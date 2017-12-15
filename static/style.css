@@ -34,6 +34,10 @@ ul {
     display: inline-block;
 }
 
+#navbar li:not(:first-child):after {
+    content: " | ";
+}
+
 #navbar a {
     padding: .5em;
     color: #9999ff;
