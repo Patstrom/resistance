@@ -22,6 +22,16 @@
         {% if nominees|length == 0 %}
             {% if user_is_leader %}
             <!-- nominee form -->
+            <form method="post" id=nominate-form action={{ url_for('nominate', game=game, turn=current_turn.id) }}>
+                <ul>
+                {% for (name, player) in players %}
+                <li>
+                    <input type=checkbox name={{ loop.index }} value={{ name }}>{{ name }}<br>
+                </li>
+                {% endfor %}
+                </ul>
+                <input type=submit name=nominate value=Nominate>
+            </form>
             {% else %}
             <p> {{ leader }} hasn't nominated a team yet</p>
             {% endif %}
