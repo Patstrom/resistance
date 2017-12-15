@@ -2,6 +2,9 @@ from flask import Flask, session, request, redirect, url_for
 from flask import render_template
 from flask import abort
 
+import random
+from resistance_rules import *
+
 app = Flask(__name__)
 app.config.from_envvar('FLASK_ENV_FILE')
 
@@ -43,6 +46,22 @@ def login():
             return render_template("login.html", failed=True)
     else:
         return render_template("login.html", failed=False)
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if session.get('user', None) is not None:
+        redirect(url_for('index'))
+
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        user = Users(username, password)
+        db_session().add(user)
+        db_session().commit()
+        session['user'] = user.id
+        return redirect(url_for('index'))
+    else:
+        return render_template('signup.html')
 
 @app.route("/logout")
 def logout():
@@ -145,8 +164,6 @@ def start_game(game=None):
             return redirect(url_for('game', game=game))
 
         # Choose the spies
-        import random
-        import resistance_rules
         spies = random.sample(players, number_of_spies[number_of_players])
         for spy in spies:
             spy.is_spy = True
@@ -157,7 +174,7 @@ def start_game(game=None):
         for index, player in enumerate(players):
             db_session().add(LeaderOrder(game_id=game,
                 current_leader=player.id,
-                next_leader=players[index + 1 % number_of_players]))
+                next_leader=players[(index + 1) % number_of_players].id))
 
         # Create the first mission and turn
         mission = Missions(game_id=game,
@@ -169,9 +186,9 @@ def start_game(game=None):
         db_session().add(turn)
 
         # Set game started to true
-        game = db_session.query(Games).filter(Games.id == game).scalar()
-        game.started = True
-        db_session().merge(game)
+        game_obj = db_session.query(Games).filter(Games.id == game).scalar()
+        game_obj.started = True
+        db_session().merge(game_obj)
         db_session.commit()
 
     return redirect(url_for('game', game=game))
