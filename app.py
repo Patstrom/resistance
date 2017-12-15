@@ -12,6 +12,15 @@ from database import load_session
 db_session = load_session()
 from models import *
 
+def check_game(game):
+    try:
+        if db_session.query(Games).filter(Games.id == game).count() == 0:
+            return True
+    except:
+        return True
+
+    return False
+
 @app.context_processor
 def inject_user():
     user = session.get('user', None)
@@ -96,10 +105,7 @@ def create_game():
 def game(game=None):
     user = session.get('user', None)
 
-    try:
-        if db_session.query(Games).filter(Games.id == game).count() == 0:
-            return redirect(url_for('index'))
-    except:
+    if check_game(game):
         return redirect(url_for('index'))
 
     # All players and posts for the current game
@@ -137,6 +143,9 @@ def game(game=None):
 
 @app.route("/<game>/join-game", methods=["GET", "POST"])
 def join_game(game=None):
+    if check_game(game):
+        return redirect(url_for('index'))
+
     if request.method == "POST":
         user = session.get('user', None)
         # If not logged in redirect to login page
@@ -156,6 +165,9 @@ def join_game(game=None):
 
 @app.route("/<game>/start-game", methods=["GET", "POST"])
 def start_game(game=None):
+    if check_game(game):
+        return redirect(url_for('index'))
+
     if request.method == "POST":
         # Make sure it's actually the creator that is starting the game
         user = session.get('user', None)
@@ -201,6 +213,8 @@ def start_game(game=None):
 
 @app.route("/<game>/missions")
 def missions(game=None):
+    if check_game(game):
+        return redirect(url_for('index'))
     # order_by id so missions[0] is the first one, missions[1] is the second one and so on.
     missions = db_session.query(Missions).join(Games) \
         .filter(Games.id == game).order_by(Missions.id.asc()).all()
@@ -227,6 +241,8 @@ def missions(game=None):
 
 @app.route("/<game>/turn-vote", methods=["GET", "POST"])
 def turn_vote(game=None):
+    if check_game(game):
+        return redirect(url_for('index'))
     if session.get('user', None) is not None:
         if request.method == "POST":
             player_id = db_session.query(Players.id).filter(Players.user_id == session['user'], Players.game_id == game).scalar()
@@ -246,6 +262,8 @@ def turn_vote(game=None):
 
 @app.route("/<game>/nominate", methods=["GET", "POST"])
 def nominate(game=None):
+    if check_game(game):
+        return redirect(url_for('index'))
     user = session.get('user', None)
     if user is not None:
         if request.method == "POST":
@@ -274,6 +292,8 @@ def nominate(game=None):
 
 @app.route("/<game>/submit-post", methods=["GET", "POST"])
 def submit_post(game=None):
+    if check_game(game):
+        return redirect(url_for('index'))
     if request.method == "GET":
         return redirect(url_for('game', game=game))
     else:
