@@ -12,5 +12,11 @@ pip install --user flask
 ```
 
 ```Bash
-python main.py
+FLASK_ENV_FILE=.env python main.py
+```
+
+```
+#.env
+DEBUG = True
+SECRET_KEY = "Not gonna happen"
 ```
