@@ -126,7 +126,7 @@ def start_game(game=None):
         # Get a leader order
         random.shuffle(players)
         for index, player in enumerate(players):
-            db_session().add(Order(game_id=game,
+            db_session().add(LeaderOrder(game_id=game,
                 current_leader=player.id,
                 next_leader=players[index + 1 % number_of_players]))
 

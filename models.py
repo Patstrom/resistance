@@ -43,8 +43,8 @@ class TurnVotes(Base):
     __tablename__ = 'turn_votes'
     __table_args__ = {'autoload':True}
 
-class Order(Base):
-    __tablename__ = 'order'
+class LeaderOrder(Base):
+    __tablename__ = 'leader_order'
     __table_args__ = {'autoload':True}
 
 class Posts(Base):
