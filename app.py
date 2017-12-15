@@ -66,14 +66,30 @@ def create_game():
 
 @app.route("/games/<game>")
 def game(game=None):
+    # All players and posts for the current game
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
-    user_is_spy = False
-    if session.get('user', None) is not None:
-        user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == session['user']).scalar()
-        return render_template("game_for_users.html", players=players, posts=posts, game=game, user_is_spy=user_is_spy)
 
-    return render_template("game_for_anonymous.html", players=players, posts=posts, game=game, user_is_spy=user_is_spy)
+    # The current turn and the nominees
+    current_turn = db_session.query(Turns).join(Missions).join(Games).filter(Games.id == game) \
+        .order_by(Turns.id.desc()).limit(1).scalar()
+    leader = db_session.query(Users.name).join(Players).filter(Players.id == current_turn.leader).scalar()
+    nominees = db_session.query(Users.name).join(Players).join(Nominees) \
+            .filter(Nominees.turn_id == current_turn.id).all()
+
+    # Check if the visitor is logged in and is part of the game
+    user = session.get('user', None)
+    if user is not None and user in [player.id for (_, player) in players]:
+        user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == user).scalar()
+        user_is_leader = True if session['user'] == current_turn.leader else False
+        players_required = db_session.query(Missions.people_required).join(Turns).filter(Turns.id == current_turn.id).scalar()
+
+        return render_template("game_for_players.html", players=players, posts=posts,
+                game=game, nominees=nominees, leader=leader,
+                user_is_spy=user_is_spy, user_is_leader=user_is_leader, players_required=players_required)
+
+    return render_template("game_for_anonymous.html", players=players, posts=posts,
+            game=game, nominees=nominees, leader=leader)
 
 @app.route("/games/<game>/missions")
 def missions(game=None):
@@ -101,6 +117,23 @@ def missions(game=None):
     game = db_session.query(Games).filter(Games.id == game).scalar()
     return render_template('missions.html', missions=missions, game=game)
 
+@app.route("/games/<game>/turn-vote", methods=["GET", "POST"])
+def turn_vote(game=None):
+    if session.get('user', None) is not None:
+        player_id = db_session.query(Players.id).filter(Players.user_id == session['user'], Players.game_id == game).scalar()
+        current_turn = db_session.query(Turns.id).join(Missions).join(Games).filter(Games.id == game) \
+            .order_by(Turns.id.desc()).limit(1).scalar()
+
+        approve = False
+        if request.form.get('approve', None) is not None:
+            approve = True
+        vote = TurnVotes(turn_id = current_turn,
+                player_id=player_id,
+                approve=approve)
+        db_session().merge(vote)
+        db_session().commit()
+
+    return redirect(url_for('game', game=game))
 
 
 
@@ -111,7 +144,8 @@ def submit_post(game=None):
     else:
         body = request.form["body"]
         author = session['user']
-        current_mission = db_session.query(Missions.id).join(Games).filter(Games.id == game).order_by(Missions.id.desc()).scalar()
+        current_mission = db_session.query(Missions.id).join(Games).filter(Games.id == game) \
+                .order_by(Missions.id.desc()).limit(1).scalar()
         post = Posts(author = author,
                 game_id = game,
                 mission_id = current_mission,
