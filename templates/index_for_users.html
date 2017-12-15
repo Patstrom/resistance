@@ -2,6 +2,7 @@
 {% block title%}Home{% endblock %}
 {% block head %}
     {{ super() }}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='index.css') }}">
 {% endblock%}
 
 {% block container %}
