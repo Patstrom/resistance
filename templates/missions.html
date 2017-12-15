@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Missions</title>
+ 
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='missions.css') }}">
+</head>
+ 
+<body>
+ 
+    <div class=container>
+        {% for mission in missions %}
+        <h1>Mission {{ loop.index }} {% if mission.is_over %}({{ "Success" if mission.success else "Failed" }}){% endif %}</h1>
+        {% if mission.vote is not none %}
+        <h2>Mission Result</h2>
+            <ul>
+            {% for vote in mission.votes %}
+            <li>
+                {% if game.is_over %} 
+                    {{ vote.name }} voted {{ "fail" if vote.fail else "success" }}
+                {% else %}
+                    Anonymous voted {{ "fail" if vote.fail else "success" }}
+                {% endif %}
+            </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <ul>
+            {% for turn in mission.turns %}
+            <li>
+                <div class=turn-summary>
+                <h2>Turn {{ loop.index }}</h2>
+                <h3>Nominees</h3>
+                    <ul class=nominees>
+                    {% for nominee in turn.nominees %}
+                    <li>{{ nominee.name }}</li>
+                    {% endfor %}
+                    </ul>
+                <h3>Votes</h3>
+                <ul>
+                    {% for vote in turn.votes %}
+                    <li>{{ vote.name }} {{ "approved" if vote.approve else "rejected" }}</li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </div>
+</body>
+ 
+</html>

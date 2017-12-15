@@ -1,0 +1,7 @@
+.turn-summary ul > li {
+    display: inline-block;
+}
+
+.turn-summary ul > li:not(:first-child):before {
+    content: " | ";
+}
