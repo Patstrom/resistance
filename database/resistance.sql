@@ -22,8 +22,8 @@ CREATE TABLE players(
 CREATE TABLE missions(
     id              serial primary key,
     game_id         integer not null references Games,
-    fails_required  smallint check(fails_required between 1 and 2),
-    people_required smallint check(people_required between 2 and 5),
+    fails_required  smallint not null check(fails_required between 1 and 2),
+    people_required smallint not null check(people_required between 2 and 5),
     success         boolean default false
 );
 
