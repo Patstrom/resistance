@@ -217,6 +217,23 @@ def turn_vote(game=None):
 
     return redirect(url_for('game', game=game))
 
+@app.route("/games/<game>/nominate", methods=["GET", "POST"])
+def nominate(game=None):
+    user = session.get('user', None)
+    if user is not None:
+        if request.method == "POST":
+            # Check that it is in fact the leader that nominated
+            current_turn = db_session.query(Turns).join(Missions).join(Games).filter(Games.id == game) \
+                .order_by(Turns.id.desc()).limit(1).scalar()
+            user_player = db_session.query(Players.id).filter(Players.game_id == game, Players.user_id==user).scalar()
+            if user_player == current_turn.leader:
+                for (key, value) in enumerate(request.form):
+                    if key != "nominate": # The button
+                        print(key, value)
+
+
+
+    return redirect(url_for('game', game=game))
 
 
 @app.route("/games/<game>/submit-post", methods=["GET", "POST"])
