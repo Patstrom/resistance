@@ -8,6 +8,17 @@
     content: " | ";
 }
 
+.nominees {
+    margin-bottom: 2em;
+}
+
+.nominees li {
+    display: inline-block;
+}
+
+.nominees li:not(:first-child):before {
+    content: " | ";
+}
 
 /* The game.html chat section */
 #chat {
