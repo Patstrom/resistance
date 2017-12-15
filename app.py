@@ -9,6 +9,12 @@ from database import load_session
 db_session = load_session()
 from models import *
 
+@app.context_processor
+def inject_user():
+    user = session.get('user', None)
+    user_is_logged_in = False if user is None else True
+    return dict(user_is_logged_in=user_is_logged_in)
+
 @app.route("/")
 def index():
     games = db_session.query(Games).all()
