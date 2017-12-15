@@ -16,14 +16,20 @@
             <ul>
             {% for (name, player) in players %}
                 <li>
-                    {{ name }} {% if user_is_spy and player.is_spy %} (spy) {% endif %}
+                    {{ name }}
                 </li>
             {% endfor %}
             </ul>
         </div>
 
-        <div id=mission-list>
-            <h1 class=header><a href={{ url_for('missions', game=game) }}>Missions</a></h1>
+        <div id=current-turn>
+            <h1 class=header>Current Turn</h1>
+            {{ mission.leader }} has nominated:<br>
+            <ul>
+                {% for nominee in nominees %}
+                <li>{{ nominee }}</li>
+                {% endfor %}
+            </ul>
         </div>
 
         <div id=chat>

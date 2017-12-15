@@ -66,11 +66,14 @@ def create_game():
 
 @app.route("/games/<game>")
 def game(game=None):
-    if session['user'] is not None:
-        user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == session['user']).scalar()
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
-    return render_template("game.html", players=players, posts=posts, game=game, user_is_spy=user_is_spy)
+    user_is_spy = False
+    if session.get('user', None) is not None:
+        user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == session['user']).scalar()
+        return render_template("game_for_users.html", players=players, posts=posts, game=game, user_is_spy=user_is_spy)
+
+    return render_template("game_for_anonymous.html", players=players, posts=posts, game=game, user_is_spy=user_is_spy)
 
 @app.route("/games/<game>/missions")
 def missions(game=None):
