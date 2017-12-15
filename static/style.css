@@ -36,6 +36,7 @@ ul {
 
 #navbar li:not(:first-child):after {
     content: " | ";
+    color: #c5c5ff;
 }
 
 #navbar a {
