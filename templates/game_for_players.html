@@ -22,11 +22,12 @@
         {% if nominees|length == 0 %}
             {% if user_is_leader %}
             <!-- nominee form -->
+            <p>You have to nominate {{ players_required }} players</p>
             <form method="post" id=nominate-form action={{ url_for('nominate', game=game, turn=current_turn.id) }}>
                 <ul>
                 {% for (name, player) in players %}
                 <li>
-                    <input type=checkbox name={{ loop.index }} value={{ name }}>{{ name }}<br>
+                    <input type=checkbox name={{ loop.index }} value={{ player.id }}>{{ name }}<br>
                 </li>
                 {% endfor %}
                 </ul>
