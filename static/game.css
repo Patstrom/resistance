@@ -12,6 +12,20 @@
     content: " | ";
 }
 
+#nominate-form li {
+    display: inline-block;
+}
+
+#nominate-form li + li {
+    content " | ";
+}
+
+#nominate-form input[type=submit] {
+    padding: .3em;
+    display: block;
+    float: right;
+}
+
 .nominees {
     margin-bottom: 2em;
 }
@@ -51,7 +65,6 @@
     padding: .3em;
     display: block;
     float: right;
-    border: none;
 }
 
 /* The post object, which consists of an author, a creation date and some text */
