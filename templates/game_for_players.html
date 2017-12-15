@@ -42,7 +42,7 @@
     <div id=chat>
         <h1>Chat</h1>
         <form method="post" id=post-message-form action={{ url_for('submit_post', game=game) }}>
-            <input type=text name=body><br>
+            <input type=textarea required rows="15" cols="50" name=body>
             <input type=submit value=Post>
         </form>
 

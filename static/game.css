@@ -35,10 +35,7 @@
     box-sizing:border-box;
 }
 
-#chat #post-message-form  input[type=text] {
-    display: inline-block;
-    width: inherit;
-    height: 25em;
+#chat #post-message-form input[type=textarea] {
 }
 
 #chat #post-message-form  input[type=submit] {
