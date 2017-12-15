@@ -5,7 +5,7 @@ class Users(Base):
     __tablename__ = 'users'
     __table_args__ = {'autoload':True}
 
-    def __init__(username, password):
+    def __init__(self, username, password):
         self.name = username.lower()
         self.set_password(password)
 
