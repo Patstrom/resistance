@@ -66,9 +66,11 @@ def create_game():
 
 @app.route("/games/<game>")
 def game(game=None):
+    if session['user'] is not None:
+        user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == session['user']).scalar()
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
-    return render_template("game.html", players=players, posts=posts, game=game)
+    return render_template("game.html", players=players, posts=posts, game=game, user_is_spy=user_is_spy)
 
 @app.route("/games/<game>/missions")
 def missions(game=None):
@@ -77,23 +79,24 @@ def missions(game=None):
         .filter(Games.id == game).order_by(Missions.id.asc()).all()
 
     for mission in missions:
-        print("Mission\nid: {} game_id: {}, fails_required: {} people_required: {} succes: {}" \
-                .format(mission.id, mission.game_id, mission.fails_required, mission.people_required, mission.success))
         # order_by id so turns[0] is the first one, turns[1] is the second one and so on.
         turns = db_session.query(Turns) \
             .filter(Turns.mission_id == mission.id).order_by(Turns.id.asc()).all()
         for turn in turns:
-            print("Turn\nid: {} mission_id: {} leader: {} approved: {}".format(turn.id, turn.mission_id, turn.leader, turn.approved))
+            turn_votes = db_session.query(Users.name, TurnVotes.approve).select_from(TurnVotes) \
+                    .join(Players).join(Users).filter(TurnVotes.turn_id==turn.id).all()
+            turn.votes = turn_votes
 
-            turn_votes = db_session.query(TurnVotes).filter(TurnVotes.turn_id == turn.id).all()
-            for turn_vote in turn_votes:
-                print("player:{} voted {}".format(turn_vote.player_id, "approve" if turn_vote.approve else "reject"))
+            nominees = db_session.query(Users.name).join(Players).join(Nominees).filter(Nominees.turn_id == turn.id).all()
+            turn.nominees = nominees
 
-            print("Nominees\n")
-            nominees = db_session.query(Nominees.player_id).filter(Nominees.turn_id == turn.id).all()
-            print([nominee.player_id for nominee in nominees])
+        mission_votes = db_session.query(Users.name, MissionVotes.fail).select_from(MissionVotes) \
+                .join(Players).join(Users).filter(MissionVotes.mission_id == mission.id).all()
+        mission.votes = mission_votes
+        mission.turns = turns
 
-    return redirect(url_for('index'))
+    game = db_session.query(Games).filter(Games.id == game).scalar()
+    return render_template('missions.html', missions=missions, game=game)
 
 
 
