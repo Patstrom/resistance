@@ -23,7 +23,7 @@
             {% if user_is_leader %}
             <!-- nominee form -->
             <p>You have to nominate {{ players_required }} players</p>
-            <form method="post" id=nominate-form action={{ url_for('nominate', game=game, turn=current_turn.id) }}>
+            <form method="post" id=nominate-form action={{ url_for('nominate', game=game) }}>
                 <ul>
                 {% for (name, player) in players %}
                 <li>
