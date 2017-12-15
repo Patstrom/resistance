@@ -47,7 +47,7 @@ def create_game():
     else:
         creator = session.get('user')
         name = request.form["game-name"]
-        if creator is not None and not name.isspace():
+        if creator is not None and not name:
             # Create the game
             game = Games(creator=creator,
                     name = name)
@@ -72,11 +72,11 @@ def game(game=None):
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
 
-
+    user_is_player = user in [player.id for (_, player) in players] # Will be false if use is None
     (creator, game_has_started) = db_session.query(Games.creator, Games.started).filter(Games.id == game).one()
-    print("{} : {}".format(creator, game_has_started))
     if not game_has_started:
-        render_template('game_not_started.html', players=players, posts=posts, user_is_creator=creator == user)
+        return render_template('game_not_started.html', players=players, posts=posts, game=game,
+                    user_is_creator=creator == user, user_is_player=user_is_player)
 
 
     # The current turn and the nominees
@@ -88,7 +88,7 @@ def game(game=None):
 
 
     # Check if the visitor is logged in and is part of the game
-    if user is not None and user in [player.id for (_, player) in players]:
+    if user_is_player:
         user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == user).scalar()
         user_is_leader = True if session['user'] == current_turn.leader else False
         players_required = db_session.query(Missions.people_required).join(Turns).filter(Turns.id == current_turn.id).scalar()
@@ -100,14 +100,28 @@ def game(game=None):
     return render_template("game_for_anonymous.html", players=players, posts=posts,
             game=game, nominees=nominees, leader=leader)
 
-@app.route("/games/<game>/start-game", method=["GET", "POST"])
+@app.route("/games/<game>/join-game", methods=["GET", "POST"])
+def join_game(game=None):
+    if request.method == "POST":
+        user = session.get('user', None)
+        # If not logged in redirect to login page
+        if user is None:
+            return redirect(url_for('login'))
+
+        player = Player(game_id=game, user_id=user)
+        db_session().add(player)
+        db_session().commit()
+
+    return redirect(url_for('game', game=game))
+
+@app.route("/games/<game>/start-game", methods=["GET", "POST"])
 def start_game(game=None):
     if request.method == "POST":
         # Make sure it's actually the creator that is starting the game
         user = session.get('user', None)
         creator = db_session.query(Games.creator).filter(Games.id == game).scalar()
         if user != creator:
-            redirect(url_for('game', game=game))
+            return redirect(url_for('game', game=game))
 
         # Get the game's players
         players = db_session.query(Players).filter(Players.game_id == game).all()
@@ -200,7 +214,11 @@ def submit_post(game=None):
         return redirect(url_for('game', game=game))
     else:
         body = request.form["body"]
-        author = session['user']
+        author = session.get('user', None)
+        # If there is no author or body is None or empty then just redirect back
+        if author is None or not body:
+            return redirect(url_for('game', game=game))
+
         current_mission = db_session.query(Missions.id).join(Games).filter(Games.id == game) \
                 .order_by(Missions.id.desc()).limit(1).scalar()
         post = Posts(author = author,
