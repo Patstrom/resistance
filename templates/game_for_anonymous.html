@@ -38,11 +38,6 @@
 
         <div id=chat>
             <h1>Chat</h1>
-            <form method="post" id=post-message-form action={{ url_for('submit_post', game=game) }}>
-                <input type=text name=body><br>
-                <input type=submit value=Post>
-            </form>
-
             <ul>
             {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
                 <li>
