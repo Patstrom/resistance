@@ -16,10 +16,14 @@
             <ul>
             {% for (name, player) in players %}
                 <li>
-                    {{ name }} : {{ player.is_spy }}
+                    {{ name }} {% if user_is_spy and player.is_spy %} (spy) {% endif %}
                 </li>
             {% endfor %}
             </ul>
+        </div>
+
+        <div id=mission-list>
+            <h1 class=header><a href={{ url_for('missions', game=game) }}>Missions</a></h1>
         </div>
 
         <div id=chat>
