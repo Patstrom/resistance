@@ -29,26 +29,29 @@
     width: inherit;
 }
 
+#form-area {
+    width: inherit;
+    padding-bottom: 1em;
+}
+
 /* The form for posting message */
 #chat #post-message-form {
     width: inherit;
     box-sizing:border-box;
+    padding: .3em;
+    margin: .3em;
 }
 
-#chat #post-message-form input[type=textarea] {
+#chat textarea {
+    display: inline-block;
+    width: inherit;
 }
 
 #chat #post-message-form  input[type=submit] {
-    float: right;
-    cursor: pointer;
-    border: none;
-}
-
-#chat #post-message-form:after {
-    content: ' ';
-    width: inherit;
+    padding: .3em;
     display: block;
-    border: 2px solid #d0d0d0;
+    float: right;
+    border: none;
 }
 
 /* The post object, which consists of an author, a creation date and some text */

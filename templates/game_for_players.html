@@ -41,10 +41,12 @@
 
     <div id=chat>
         <h1>Chat</h1>
-        <form method="post" id=post-message-form action={{ url_for('submit_post', game=game) }}>
-            <input type=textarea required rows="15" cols="50" name=body>
-            <input type=submit value=Post>
-        </form>
+        <div id=form-area>
+            <textarea form=post-message-form required rows="10" cols="50" name=body></textarea>
+            <form method="post" id=post-message-form action={{ url_for('submit_post', game=game) }}>
+                <input type=submit value=Post>
+            </form>
+        </div>
 
         <ul>
         {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
