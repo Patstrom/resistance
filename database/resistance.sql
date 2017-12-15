@@ -6,7 +6,7 @@ CREATE TABLE users(
 
 CREATE TABLE games(
     id      serial primary key,
-    name    text not null,
+    name    text not null unique,
     creator integer not null references Users,
     started boolean not null default false,
     is_over boolean not null default false
@@ -16,7 +16,8 @@ CREATE TABLE players(
     id      serial primary key,
     game_id integer not null references Games,
     user_id integer not null references Users,
-    is_spy  boolean default false
+    is_spy  boolean default false,
+    unique  (user_id, game_id)
 );
 
 CREATE TABLE missions(
