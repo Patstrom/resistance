@@ -66,9 +66,18 @@ def create_game():
 
 @app.route("/games/<game>")
 def game(game=None):
+    user = session.get('user', None)
+
     # All players and posts for the current game
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
+
+
+    (creator, game_has_started) = db_session.query(Games.creator, Games.started).filter(Games.id == game).one()
+    print("{} : {}".format(creator, game_has_started)
+    if not game_has_started:
+        render_template('game_not_started.html', players=players, posts=posts, user_is_creator=creator == user)
+
 
     # The current turn and the nominees
     current_turn = db_session.query(Turns).join(Missions).join(Games).filter(Games.id == game) \
@@ -77,8 +86,8 @@ def game(game=None):
     nominees = db_session.query(Users.name).join(Players).join(Nominees) \
             .filter(Nominees.turn_id == current_turn.id).all()
 
+
     # Check if the visitor is logged in and is part of the game
-    user = session.get('user', None)
     if user is not None and user in [player.id for (_, player) in players]:
         user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == user).scalar()
         user_is_leader = True if session['user'] == current_turn.leader else False
@@ -90,6 +99,51 @@ def game(game=None):
 
     return render_template("game_for_anonymous.html", players=players, posts=posts,
             game=game, nominees=nominees, leader=leader)
+
+@app.route("/games/<game>/start-game", method=["GET", "POST"])
+def start_game(game=None):
+    if request.method == "POST":
+        # Make sure it's actually the creator that is starting the game
+        user = session.get('user', None)
+        creator = db_session.query(Games.creator).filter(Games.id == game).scalar()
+        if user != creator:
+            redirect(url_for('game', game=game))
+
+        # Get the game's players
+        players = db_session.query(Players).filter(Players.game_id == game).all()
+        number_of_players = len(players)
+        if number_of_players < 5 or number_of_players > 10:
+            return redirect(url_for('game', game=game))
+
+        # Choose the spies
+        import random
+        import resistance_rules
+        spies = random.sample(players, number_of_spies[number_of_players])
+        for spy in spies:
+            spy.is_spy = True
+            db_session().merge(spy)
+
+        # Get a leader order
+        random.shuffle(players)
+        for index, player in enumerate(players):
+            db_session().add(Order(game_id=game,
+                current_leader=player.id,
+                next_leader=players[index + 1 % number_of_players])
+
+        # Create the first mission and turn
+        mission = Missions(game_id=game, fails_required=1, people_required=number_of_players_for_mission[number_of_players][0])
+        db_session().add(mission)
+        db_session().flush()
+        turn = Turns(mission_id=mission.id, leader=players[0].id)
+        db_session().add(turn)
+
+        # Set game started to true
+        game = db_session.query(Games).filter(Games.id == game).scalar()
+        game.started = True
+        db_session().merge(game)
+        db_session.commit()
+
+    return redirect(url_for('game', game=game))
 
 @app.route("/games/<game>/missions")
 def missions(game=None):
@@ -120,18 +174,19 @@ def missions(game=None):
 @app.route("/games/<game>/turn-vote", methods=["GET", "POST"])
 def turn_vote(game=None):
     if session.get('user', None) is not None:
-        player_id = db_session.query(Players.id).filter(Players.user_id == session['user'], Players.game_id == game).scalar()
-        current_turn = db_session.query(Turns.id).join(Missions).join(Games).filter(Games.id == game) \
-            .order_by(Turns.id.desc()).limit(1).scalar()
+        if request.method == "POST":
+            player_id = db_session.query(Players.id).filter(Players.user_id == session['user'], Players.game_id == game).scalar()
+            current_turn = db_session.query(Turns.id).join(Missions).join(Games).filter(Games.id == game) \
+                .order_by(Turns.id.desc()).limit(1).scalar()
 
-        approve = False
-        if request.form.get('approve', None) is not None:
-            approve = True
-        vote = TurnVotes(turn_id = current_turn,
-                player_id=player_id,
-                approve=approve)
-        db_session().merge(vote)
-        db_session().commit()
+            approve = False
+            if request.form.get('approve', None) is not None:
+                approve = True
+            vote = TurnVotes(turn_id = current_turn,
+                    player_id=player_id,
+                    approve=approve)
+            db_session().merge(vote)
+            db_session().commit()
 
     return redirect(url_for('game', game=game))
 
