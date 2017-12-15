@@ -96,11 +96,11 @@ def game(game=None):
     # Check if the visitor is logged in and is part of the game
     if user_is_player:
         user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == user).scalar()
-        user_is_leader = True if session['user'] == current_turn.leader else False
+        user_is_leader = [user == player.user_id for (_, player) in players if player.id == current_turn.leader]
         players_required = db_session.query(Missions.people_required).join(Turns).filter(Turns.id == current_turn.id).scalar()
 
         return render_template("game_for_players.html", players=players, posts=posts,
-                game=game, nominees=nominees, leader=leader,
+                game=game, nominees=nominees, leader=leader, current_turn=current_turn,
                 user_is_spy=user_is_spy, user_is_leader=user_is_leader, players_required=players_required)
 
     return render_template("game_for_anonymous.html", players=players, posts=posts,
