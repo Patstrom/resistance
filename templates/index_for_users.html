@@ -7,14 +7,14 @@
 
 {% block container %}
     <form method="post" id=create-game-form action={{ url_for('create_game') }}>
-        <input type=text name=game-name placeholder="Name">
+        <input type=text required name=game-name placeholder="Name">
         <input type=submit value="Create game">
     </form>
 
     <div class=game-list>
         <h1 class=header>Your Games</h1>
         <ul>
-        {% for game in usergames %}
+        {% for game in usergames|sort(attribute='id') %}
             <li><a href="{{ url_for('game', game=game.id) }}">
                 {{ game.name }}
             </a></li>
