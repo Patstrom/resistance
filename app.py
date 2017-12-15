@@ -74,7 +74,7 @@ def game(game=None):
 
 
     (creator, game_has_started) = db_session.query(Games.creator, Games.started).filter(Games.id == game).one()
-    print("{} : {}".format(creator, game_has_started)
+    print("{} : {}".format(creator, game_has_started))
     if not game_has_started:
         render_template('game_not_started.html', players=players, posts=posts, user_is_creator=creator == user)
 
@@ -128,10 +128,12 @@ def start_game(game=None):
         for index, player in enumerate(players):
             db_session().add(Order(game_id=game,
                 current_leader=player.id,
-                next_leader=players[index + 1 % number_of_players])
+                next_leader=players[index + 1 % number_of_players]))
 
         # Create the first mission and turn
-        mission = Missions(game_id=game, fails_required=1, people_required=number_of_players_for_mission[number_of_players][0])
+        mission = Missions(game_id=game,
+            fails_required=1,
+            people_required=number_of_players_for_mission[number_of_players][0])
         db_session().add(mission)
         db_session().flush()
         turn = Turns(mission_id=mission.id, leader=players[0].id)
