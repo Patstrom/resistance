@@ -101,7 +101,7 @@ def game(game=None):
 
         return render_template("game_for_players.html", players=players, posts=posts,
                 game=game, nominees=nominees, leader=leader, current_turn=current_turn,
-                user_is_spy=user_is_spy, user_is_leader=user_is_leader, players_required=players_required)
+                user_is_spy=user_is_spy, user_is_leader=user_is_leader, player_required=players_required)
 
     return render_template("game_for_anonymous.html", players=players, posts=posts,
             game=game, nominees=nominees, leader=leader)
@@ -227,10 +227,19 @@ def nominate(game=None):
                 .order_by(Turns.id.desc()).limit(1).scalar()
             user_player = db_session.query(Players.id).filter(Players.game_id == game, Players.user_id==user).scalar()
             if user_player == current_turn.leader:
-                for (key, value) in enumerate(request.form):
+                # Gather our nominees
+                nominees = []
+                for (key, value) in request.form.items():
                     if key != "nominate": # The button
-                        print(key, value)
+                        nominees.append(Nominee(turn_id=current_turn.id,
+                            player_id=key)
 
+                players_required = db_session.query(Missions.people_required).join(Turns) \
+                        .filter(Turns.id == current_turn.id).scalar()
+                # The correct amount of players has been nominated
+                if len(nominees) == current_mission.players_required:
+                    db_sessions.bulk_save_objects(nominees)
+                    db_sessions.commit()
 
 
     return redirect(url_for('game', game=game))
