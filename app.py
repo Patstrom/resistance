@@ -96,6 +96,12 @@ def create_game():
 def game(game=None):
     user = session.get('user', None)
 
+    try:
+        if db_session.query(Games).filter(Games.id == game).count() == 0:
+            return redirect(url_for('index'))
+    except:
+        return redirect(url_for('index'))
+
     # All players and posts for the current game
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
