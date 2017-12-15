@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title>Login</title>
+ 
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+ 
+<body>
+ 
+    <div class="container">
+        <p>Only lowercase usernames are allowed and they are unique</p>
+        <p>Your password will not be stored in plaintext. If you lose it you lose access to your account</p>
+
+        <form method="post" class=form id=signup-form>
+            <input type=text name=username placeholder="username"><br>
+            <input type=text name=password placeholder="password"><br>
+            <input type=submit value="Sign up">
+        </form>
+
+    </div>
+
+</body>
+ 
+</html>
