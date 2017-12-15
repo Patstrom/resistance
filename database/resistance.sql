@@ -55,6 +55,13 @@ CREATE TABLE mission_votes(
     primary key (mission_id, player_id)
 );
 
+CREATE TABLE order(
+    game_id         integer not null references Games,
+    current_leader  integer not null references Players,
+    next_leader     integer not null references Players,
+    primary key     (game_id, current_player)
+);
+
 CREATE TABLE posts(
     id          serial primary key,
     author      integer not null references Users,
