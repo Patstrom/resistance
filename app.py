@@ -117,8 +117,8 @@ def join_game(game=None):
         players = db_session.query(Players).filter(Players.game_id == game).all()
         user_is_player = user in [player.user_id for player in players]
 
-        # This check isn't neccesary if the user behaves
-        if not user_is_player:
+        # If user hasn't already joined and if there is room
+        if not user_is_player or len(players) > 10:
             player = Players(game_id=game, user_id=user)
             db_session().add(player)
             db_session().commit()
