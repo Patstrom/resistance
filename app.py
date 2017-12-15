@@ -27,6 +27,9 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if session.get('user', None) is not None:
+        redirect(url_for('index'))
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -97,16 +100,17 @@ def game(game=None):
     if user_is_player:
         user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == user).scalar()
         user_is_leader = [user == player.user_id for (_, player) in players if player.id == current_turn.leader]
-        players_required = db_session.query(Missions.people_required).join(Turns).filter(Turns.id == current_turn.id).scalar()
+        players_required = db_session.query(Missions.people_required).join(Turns) \
+                .filter(Turns.id == current_turn.id).scalar()
 
         return render_template("game_for_players.html", players=players, posts=posts,
                 game=game, nominees=nominees, leader=leader, current_turn=current_turn,
-                user_is_spy=user_is_spy, user_is_leader=user_is_leader, player_required=players_required)
+                user_is_spy=user_is_spy, user_is_leader=user_is_leader, players_required=players_required)
 
     return render_template("game_for_anonymous.html", players=players, posts=posts,
             game=game, nominees=nominees, leader=leader)
 
-@app.route("/games/<game>/join-game", methods=["GET", "POST"])
+@app.route("/<game>/join-game", methods=["GET", "POST"])
 def join_game(game=None):
     if request.method == "POST":
         user = session.get('user', None)
@@ -125,7 +129,7 @@ def join_game(game=None):
 
     return redirect(url_for('game', game=game))
 
-@app.route("/games/<game>/start-game", methods=["GET", "POST"])
+@app.route("/<game>/start-game", methods=["GET", "POST"])
 def start_game(game=None):
     if request.method == "POST":
         # Make sure it's actually the creator that is starting the game
@@ -172,7 +176,7 @@ def start_game(game=None):
 
     return redirect(url_for('game', game=game))
 
-@app.route("/games/<game>/missions")
+@app.route("/<game>/missions")
 def missions(game=None):
     # order_by id so missions[0] is the first one, missions[1] is the second one and so on.
     missions = db_session.query(Missions).join(Games) \
@@ -198,7 +202,7 @@ def missions(game=None):
     game = db_session.query(Games).filter(Games.id == game).scalar()
     return render_template('missions.html', missions=missions, game=game)
 
-@app.route("/games/<game>/turn-vote", methods=["GET", "POST"])
+@app.route("/<game>/turn-vote", methods=["GET", "POST"])
 def turn_vote(game=None):
     if session.get('user', None) is not None:
         if request.method == "POST":
@@ -217,7 +221,7 @@ def turn_vote(game=None):
 
     return redirect(url_for('game', game=game))
 
-@app.route("/games/<game>/nominate", methods=["GET", "POST"])
+@app.route("/<game>/nominate", methods=["GET", "POST"])
 def nominate(game=None):
     user = session.get('user', None)
     if user is not None:
@@ -231,21 +235,21 @@ def nominate(game=None):
                 nominees = []
                 for (key, value) in request.form.items():
                     if key != "nominate": # The button
-                        nominees.append(Nominee(turn_id=current_turn.id,
-                            player_id=key)
+                        nominees.append(Nominees(turn_id=current_turn.id,
+                            player_id=key))
 
                 players_required = db_session.query(Missions.people_required).join(Turns) \
                         .filter(Turns.id == current_turn.id).scalar()
                 # The correct amount of players has been nominated
-                if len(nominees) == current_mission.players_required:
-                    db_sessions.bulk_save_objects(nominees)
-                    db_sessions.commit()
+                if len(nominees) == players_required:
+                    db_session().bulk_save_objects(nominees)
+                    db_session().commit()
 
 
     return redirect(url_for('game', game=game))
 
 
-@app.route("/games/<game>/submit-post", methods=["GET", "POST"])
+@app.route("/<game>/submit-post", methods=["GET", "POST"])
 def submit_post(game=None):
     if request.method == "GET":
         return redirect(url_for('game', game=game))
