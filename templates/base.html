@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block head %}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}{% endblock %} - The Resistance o.s.v</title>
+    {% endblock %}
+</head>
+ 
+<body>
+    <div id=header>
+        <ul id=navbar>
+            {% if user_is_logged_in %}
+            <li><a href={{ url_for('logout') }}>Logout</a></li>
+            {% else %}
+            <li><a href={{ url_for('login') }}>Login</a></li>
+            <!--            <li><a href="">Sign up</a></li> -->
+            {% endif %}
+            <li><a href={{ url_for('index') }}>Home</a></li>
+        </ul>
+    </div>
+
+    <div class=container>
+        {% block container %}{% endblock %}
+    </div>
+</body>
+</html>

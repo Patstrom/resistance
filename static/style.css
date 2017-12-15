@@ -29,3 +29,25 @@ ul {
     width: 80em;
 }
 
+#navbar li {
+    float: right;
+    display: inline-block;
+}
+
+#navbar a {
+    padding: .5em;
+    color: #9999ff;
+    text-decoration: none;
+}
+
+#navbar a:visited {
+    text-decoration: none;
+}
+
+#navbar a:hover {
+    text-decoration: underline;
+}
+
+.game-list li {
+    margin: .2em;
+}

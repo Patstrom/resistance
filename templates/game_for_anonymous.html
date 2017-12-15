@@ -1,53 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
- 
-<head>
-    <title>Game</title>
- 
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+{% extends "base.html" %}
+{% block title%}Game{% endblock %}
+{% block head %}
+    {{ super() }}
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='game.css') }}">
-</head>
- 
-<body>
- 
-    <div class=container>
-        <div id=player-list>
-            <h1 class=header>Players</h1>
-            <ul>
-            {% for (name, player) in players %}
-                <li>
-                    {{ name }}
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
+{% endblock%}
 
-        <div id=current-turn>
-            <h1 class=header>Current Turn</h1>
-            {% if nominees|length == 0 %}
-                <p> {{ leader }} hasn't nominated a team yet</p>
-            {% else %}
-            <p>{{ leader }} has nominated:</p>
-            <ul class=nominess>
-                {% for nominee in nominees %}
-                <li>{{ nominee.name }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
-
-        <div id=chat>
-            <h1>Chat</h1>
-            <ul>
-            {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
-                <li>
-                    <p class=author>{{ author }} @ {{ post.created_at.strftime("%y-%m-%d %H:%M") }}</p>
-                    <p>{{ post.body }}</p>
-                </li>
-            {% endfor %}
-            </ul>
-        </div>
+{% block container %}
+    <div id=player-list>
+        <h1 class=header>Players</h1>
+        <ul>
+        {% for (name, player) in players %}
+            <li>
+                {{ name }}
+            </li>
+        {% endfor %}
+        </ul>
     </div>
-</body>
- 
-</html>
+
+    <div id=current-turn>
+        <h1 class=header>Current Turn</h1>
+        {% if nominees|length == 0 %}
+            <p> {{ leader }} hasn't nominated a team yet</p>
+        {% else %}
+        <p>{{ leader }} has nominated:</p>
+        <ul class=nominess>
+            {% for nominee in nominees %}
+            <li>{{ nominee.name }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div id=chat>
+        <h1>Chat</h1>
+        <ul>
+        {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
+            <li>
+                <p class=author>{{ author }} @ {{ post.created_at.strftime("%y-%m-%d %H:%M") }}</p>
+                <p>{{ post.body }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

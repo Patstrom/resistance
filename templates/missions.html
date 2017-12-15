@@ -1,19 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
- 
-<head>
-    <title>Missions</title>
- 
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+{% extends "base.html" %}
+{% block title%}Missions{% endblock %}
+{% block head %}
+    {{ super() }}
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='missions.css') }}">
-</head>
- 
-<body>
- 
-    <div class=container>
-        {% for mission in missions %}
-        <h1>Mission {{ loop.index }} {% if mission.is_over %}({{ "Success" if mission.success else "Failed" }}){% endif %}</h1>
-        {% if mission.vote is not none %}
+{% endblock%}
+
+{% block container %}
+    {% for mission in missions %}
+    <h1>Mission {{ loop.index }} {% if mission.is_over %}({{ "Success" if mission.success else "Failed" }}){% endif %}</h1>
+    {% if mission.vote is not none %}
+    <div id=mission-result>
         <h2>Mission Result</h2>
             <ul>
             {% for vote in mission.votes %}
@@ -26,7 +22,9 @@
             </li>
             {% endfor %}
             </ul>
-        {% endif %}
+    </div>
+    {% endif %}
+    <div id=turn-list>
         <ul>
             {% for turn in mission.turns %}
             <li>
@@ -50,6 +48,4 @@
         </ul>
         {% endfor %}
     </div>
-</body>
- 
-</html>
+{% endblock %} 

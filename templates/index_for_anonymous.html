@@ -1,38 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
- 
-<head>
-    <title>The Resistance Online O.S.V</title>
- 
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-</head>
- 
-<body>
-    <div class="container">
-        <div class=game-list>
-        <h1 class=header>Available Games</h1>
-            <ul>
-            {% for game in games|sort(attribute='id', reverse=True) %}
-                {% if not game.started %}
-                    <li><a href="{{ url_for('game', game=game.id) }}">
-                        {{ game.name }}
-                    </a></li>
-                {% endif %}
-            {% endfor %}
-            </ul>
-        </div>
+{% extends "base.html" %}
+{% block title%}Home{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock%}
 
-        <div class=game-list>
-        <h1 class=header>All Games</h1>
-            <ul>
-            {% for game in games|sort(attribute='id') %}
+{% block container %}
+    <div class=game-list>
+        <h1 class=header>Available Games</h1>
+        <ul>
+        {% for game in games|sort(attribute='id', reverse=True) %}
+            {% if not game.started %}
                 <li><a href="{{ url_for('game', game=game.id) }}">
                     {{ game.name }}
                 </a></li>
-            {% endfor %}
-            </ul>
-        </div>
+            {% endif %}
+        {% endfor %}
+        </ul>
     </div>
-</body>
 
-</html>
+    <div class=game-list>
+        <h1 class=header>All Games</h1>
+        <ul>
+        {% for game in games|sort(attribute='id') %}
+            <li><a href="{{ url_for('game', game=game.id) }}">
+                {{ game.name }}
+            </a></li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
