@@ -1,6 +1,8 @@
 .game-list li {
     display: block;
+    padding: .3em;
 }
+
 
 .game-list a {
     padding .3em;
