@@ -1,3 +1,7 @@
+#player-list {
+    margin-bottom: 2em;
+}
+
 /* We want a horizontal player-list in game.html */
 #player-list ul > li {
     display: inline-block;
