@@ -65,10 +65,10 @@ CREATE TABLE leader_order(
 );
 
 CREATE TABLE posts(
-    id          serial primary key,
-    author      integer not null references Users,
-    game_id     integer not null references Games,
-    mission_id  integer references Missions,
-    body        text not null,
-    created_at  timestamp default current_timestamp
+    id              serial primary key,
+    author          integer not null references Users,
+    game_id         integer not null references Games,
+    mission_number  integer check(mission_number between 1 and 5),
+    body            text not null,
+    created_at      timestamp default current_timestamp
 );

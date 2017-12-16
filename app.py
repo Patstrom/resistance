@@ -308,8 +308,7 @@ def submit_post(game=None):
         if author is None or not body:
             return redirect(url_for('game', game=game))
 
-        current_mission = db_session.query(Missions.id).join(Games).filter(Games.id == game) \
-                .order_by(Missions.id.desc()).limit(1).scalar()
+        mission_number = db_session.query(Missions).filter(Missions.game_id == game).count()
         post = Posts(author = author,
                 game_id = game,
                 mission_id = current_mission,
