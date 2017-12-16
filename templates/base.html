@@ -12,7 +12,7 @@
     <div id=header>
         <ul id=navbar>
             {% if user_is_logged_in %}
-            <li><a href={{ url_for('logout') }}>Logout</a></li>
+            <li><a href={{ url_for('logout') }}>Logout ({{ username }})</a></li>
             {% else %}
             <li><a href={{ url_for('login') }}>Login</a></li>
             <li><a href={{ url_for('signup') }}>Sign up</a></li>

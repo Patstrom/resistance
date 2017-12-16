@@ -25,7 +25,9 @@ def check_game(game):
 def inject_user():
     user = session.get('user', None)
     user_is_logged_in = False if user is None else True
-    return dict(user_is_logged_in=user_is_logged_in)
+    if user_is_logged_in:
+        username = db_session.query(Users.name).filter(Users.id == user).scalar()
+    return dict(user_is_logged_in=user_is_logged_in, username=username)
 
 @app.route("/")
 def index():
