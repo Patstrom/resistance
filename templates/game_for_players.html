@@ -19,6 +19,8 @@
 
     <div id=current-turn>
         <h1 class=header>Current Turn</h1>
+        <!-- Show the chosen team if it is chosen -->
+        <!-- Allow team members to vote (only spies can vote fail -->
         {% if nominees|length == 0 %}
             {% if user_is_leader %}
             <!-- nominee form -->
@@ -62,7 +64,7 @@
         <ul>
         {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
             <li>
-                <p class=author>{{ author }} @ {{ post.created_at.strftime("%y-%m-%d %H:%M") }}</p>
+                <p class=author>{{ author }} @ {{ post.created_at.strftime("%y-%m-%d %H:%M") }} during mission {{ post.mission_number }}</p>
                 <p>{{ post.body }}</p>
             </li>
         {% endfor %}
