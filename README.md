@@ -20,3 +20,11 @@ FLASK_ENV_FILE=.env python main.py
 DEBUG = True
 SECRET_KEY = "Not gonna happen"
 ```
+
+## TODO
+
+* Create a game.html template for better readibility
+* Can probably template everything more
+* Add support for mission\_votes
+* Style login and signup
+* Create a cronjob that handles the "night cycles"
