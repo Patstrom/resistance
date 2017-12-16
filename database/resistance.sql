@@ -25,6 +25,7 @@ CREATE TABLE missions(
     game_id         integer not null references Games,
     fails_required  smallint not null check(fails_required between 1 and 2),
     people_required smallint not null check(people_required between 2 and 5),
+    team_is_chosen  boolean default false,
     success         boolean default false
 );
 
