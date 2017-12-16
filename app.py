@@ -116,9 +116,11 @@ def game(game=None):
 
     user_is_player = user in [player.user_id for (_, player) in players] # Will be false if use is None
     (creator, game_has_started) = db_session.query(Games.creator, Games.started).filter(Games.id == game).one()
+    creator_name = "".join([name for (name, player) in players if player.user_id==creator])
     if not game_has_started:
         return render_template('game_not_started.html', players=players, posts=posts, game=game,
-                    user_is_creator=creator == user, user_is_player=user_is_player)
+                    user_is_creator=creator == user, user_is_player=user_is_player,
+                    creator_name=creator_name)
 
 
     # The current turn and the nominees

@@ -8,6 +8,7 @@
 {% block container %}
     <div id=player-list>
         <h1 class=header>Players</h1>
+        <p>There has to be at least 5 and at most 10 players</p>
         <ul>
         {% for (name, player) in players %}
             <li>
@@ -29,7 +30,7 @@
 
     <div id=chat>
         <h1>Chat</h1>
-        <p>Players will be able to post when the creator has started the game</p>
+        <p>Players will be able to post when {{ creator_name }} has started the game</p>
         <ul>
         {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
             <li>
