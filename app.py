@@ -125,7 +125,7 @@ def game(game=None):
 
 
     # The current turn and the nominees
-    current_turn = db_session.query(Turns).join(Missions).join(Games).filter(Games.id == game) \
+    current_turn = db_session.query(Turns).join(Missions).filter(Missions.game_id == game) \
         .order_by(Turns.id.desc()).limit(1).scalar()
     leader = db_session.query(Users.name).join(Players).filter(Players.id == current_turn.leader).scalar()
     nominees = db_session.query(Users.name).join(Players).join(Nominees) \
@@ -251,7 +251,7 @@ def turn_vote(game=None):
     if session.get('user', None) is not None:
         if request.method == "POST":
             player_id = db_session.query(Players.id).filter(Players.user_id == session['user'], Players.game_id == game).scalar()
-            current_turn = db_session.query(Turns.id).join(Missions).join(Games).filter(Games.id == game) \
+            current_turn = db_session.query(Turns.id).join(Missions).filter(Missions.game_id == game) \
                 .order_by(Turns.id.desc()).limit(1).scalar()
 
             approve = False
@@ -279,10 +279,14 @@ def nominate(game=None):
             if user_player == current_turn.leader:
                 # Gather our nominees
                 nominees = []
-                for (key, value) in request.form.items():
-                    if key != "nominate": # The button
+                nominee_candidates = request.form.values()
+                for value in set(nominee_candidates):
+                    # Check that the given player_id is part of the game and that the
+                    # form value is an integer
+                    if isinstance(value, int) and db_session.query(Players) \
+                            .filter(Players.game_id==game, Players.id==value).count() > 0:
                         nominees.append(Nominees(turn_id=current_turn.id,
-                            player_id=key))
+                            player_id=value))
 
                 players_required = db_session.query(Missions.people_required).join(Turns) \
                         .filter(Turns.id == current_turn.id).scalar()
@@ -311,7 +315,7 @@ def submit_post(game=None):
         mission_number = db_session.query(Missions).filter(Missions.game_id == game).count()
         post = Posts(author = author,
                 game_id = game,
-                mission_id = current_mission,
+                mission_id = mission_number,
                 body = body)
         db_session().add(post)
         db_session().commit()
