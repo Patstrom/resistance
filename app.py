@@ -42,8 +42,9 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # User is already logged in
     if session.get('user', None) is not None:
-        redirect(url_for('index'))
+        return redirect(url_for('index'))
 
     if request.method == "POST":
         username = request.form["username"]
@@ -61,8 +62,9 @@ def login():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    # User is already logged in
     if session.get('user', None) is not None:
-        redirect(url_for('index'))
+        return redirect(url_for('index'))
 
     if request.method == "POST":
         username = request.form["username"]
@@ -115,7 +117,7 @@ def game(game=None):
     players = db_session.query(Users.name, Players).join(Players).filter(Players.game_id == game).all()
     posts = db_session.query(Users.name, Posts).join(Posts).filter(Posts.game_id == game).all()
 
-    user_is_player = user in [player.user_id for (_, player) in players] # Will be false if use is None
+    user_is_player = user in [player.user_id for (_, player) in players] # Will be false if user is None
     (creator, game_has_started) = db_session.query(Games.creator, Games.started).filter(Games.id == game).one()
     creator_name = "".join([name for (name, player) in players if player.user_id==creator])
     if not game_has_started:
@@ -127,10 +129,13 @@ def game(game=None):
     # The current turn and the nominees
     current_turn = db_session.query(Turns).join(Missions).filter(Missions.game_id == game) \
         .order_by(Turns.id.desc()).limit(1).scalar()
-    leader = db_session.query(Users.name).join(Players).filter(Players.id == current_turn.leader).scalar()
-    nominees = db_session.query(Users.name).join(Players).join(Nominees) \
-            .filter(Nominees.turn_id == current_turn.id).all()
 
+    leader = db_session.query(Users.name).join(Players).filter(Players.id == current_turn.leader).scalar()
+
+    nominee_ids = db_session.query(Nominees.player_id) \
+            .filter(Nominees.turn_id == current_turn.id).all()
+    nominee_ids = [n[0] for n in nominee_ids] # Unpack the result
+    nominee_names = [name for (name, player) in players if player.id in nominee_ids]
 
     # Check if the visitor is logged in and is part of the game
     if user_is_player:
@@ -140,16 +145,19 @@ def game(game=None):
             players = [(name + " (spy)", player) if player.is_spy else (name, player) for (name, player) in players]
 
         user_is_leader = user in [player.user_id for (_, player) in players if player.id == current_turn.leader]
-        print(user_is_leader)
-        players_required = db_session.query(Missions.people_required).join(Turns) \
-                .filter(Turns.id == current_turn.id).scalar()
+        user_is_nominated = user in [player.user_id for (_, player) in players if player.id in nominee_ids]
+
+        (players_required, team_is_chosen) = db_session.query(
+                Missions.people_required, Missions.team_is_chosen).join(Turns) \
+                .filter(Turns.id == current_turn.id).one()
 
         return render_template("game_for_players.html", players=players, posts=posts,
-                game=game, nominees=nominees, leader=leader, current_turn=current_turn,
-                user_is_spy=user_is_spy, user_is_leader=user_is_leader, players_required=players_required)
+                game=game, nominees=nominee_names, leader=leader, current_turn=current_turn,
+                user_is_spy=user_is_spy, user_is_leader=user_is_leader, players_required=players_required,
+                team_is_chosen=team_is_chosen, user_is_nominated=user_is_nominated)
 
     return render_template("game_for_anonymous.html", players=players, posts=posts,
-            game=game, nominees=nominees, leader=leader)
+            game=game, nominees=nominee_names, leader=leader)
 
 @app.route("/<game>/join-game", methods=["GET", "POST"])
 def join_game(game=None):
@@ -288,7 +296,7 @@ def nominate(game=None):
                 for value in set(nominee_candidates):
                     # Check that the given player_id is part of the game and that the
                     # form value is an integer
-                    if isinstance(value, int) and db_session.query(Players) \
+                    if value.isdigit() and db_session.query(Players) \
                             .filter(Players.game_id==game, Players.id==value).count() > 0:
                         nominees.append(Nominees(turn_id=current_turn.id,
                             player_id=value))
