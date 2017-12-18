@@ -137,10 +137,10 @@ def game(game=None):
         user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == user).scalar()
         # Show spies who all spies are
         if user_is_spy:
-            for (name, _) in players:
-                name = name + " (spy)"
+            players = [(name + " (spy)", player) if player.is_spy else (name, player) for (name, player) in players]
 
-        user_is_leader = [user == player.user_id for (_, player) in players if player.id == current_turn.leader]
+        user_is_leader = user in [player.user_id for (_, player) in players if player.id == current_turn.leader]
+        print(user_is_leader)
         players_required = db_session.query(Missions.people_required).join(Turns) \
                 .filter(Turns.id == current_turn.id).scalar()
 
@@ -320,7 +320,7 @@ def submit_post(game=None):
         mission_number = db_session.query(Missions).filter(Missions.game_id == game).count()
         post = Posts(author = author,
                 game_id = game,
-                mission_id = mission_number,
+                mission_number = mission_number,
                 body = body)
         db_session().add(post)
         db_session().commit()
