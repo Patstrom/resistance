@@ -1,22 +1,8 @@
-{% extends "base.html" %}
-{% block title%}Game{% endblock %}
-{% block head %}
-    {{ super() }}
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='game.css') }}">
-{% endblock%}
+{% extends "game.html" %}
 
-{% block container %}
-    <div id=player-list>
-        <h1 class=header>Players</h1>
-        <p>There has to be at least 5 and at most 10 players</p>
-        <ul>
-        {% for (name, player) in players %}
-            <li>
-                {{ name }}
-            </li>
-        {% endfor %}
-        </ul>
-    </div>
+{% block player-list %}
+    <p>There has to be at least 5 and at most 10 players</p>
+    {{ super() }}
 
     {% if user_is_creator %}
     <form method="post" id=start-game action={{ url_for('start_game', game=game) }}>
@@ -27,17 +13,13 @@
         <input type=submit value="Join game">
     </form>
     {% endif %}
+{% endblock %}
 
-    <div id=chat>
-        <h1>Chat</h1>
-        <p>Players will be able to post when {{ creator_name }} has started the game</p>
-        <ul>
-        {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
-            <li>
-                <p class=author>{{ author }} @ {{ post.created_at.strftime("%y-%m-%d %H:%M") }} during mission {{ post.mission_number }}</p>
-                <p>{{ post.body }}</p>
-            </li>
-        {% endfor %}
-        </ul>
-    </div>
+{% block current-turn %}
+    <p>This information will be available once the game starts</p>
+{% endblock %}
+
+{% block chat %}
+    <p>Players will be able to post when {{ creator_name }} has started the game</p>
+    {{ super() }}
 {% endblock %}

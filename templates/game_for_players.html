@@ -1,73 +1,50 @@
-{% extends "base.html" %}
-{% block title%}Game{% endblock %}
-{% block head %}
-    {{ super() }}
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='game.css') }}">
-{% endblock%}
+{% extends "game.html" %}
 
-{% block container %}
-    <div id=player-list>
-        <h1 class=header>Players</h1>
-        <ul>
-        {% for (name, player) in players %}
+{% block player-list %}
+{{ super() }}
+{% endblock %}
+
+{% block current-turn %}
+    <!-- Show the chosen team if it is chosen -->
+    <!-- Allow team members to vote (only spies can vote fail) -->
+    {% if nominees|length == 0 %}
+        {% if user_is_leader %}
+        <!-- nominee form -->
+        <p>You have to nominate {{ players_required }} players</p>
+        <form method="post" id=nominate-form action={{ url_for('nominate', game=game) }}>
+            <ul>
+            {% for (name, player) in players %}
             <li>
-                {{ name }} {% if user_is_spy and player.is_spy %} (spy) {% endif %}
+                <input type=checkbox name={{ loop.index }} value={{ player.id }}>{{ name }}<br>
             </li>
-        {% endfor %}
-        </ul>
-    </div>
-
-    <div id=current-turn>
-        <h1 class=header>Current Turn</h1>
-        <!-- Show the chosen team if it is chosen -->
-        <!-- Allow team members to vote (only spies can vote fail -->
-        {% if nominees|length == 0 %}
-            {% if user_is_leader %}
-            <!-- nominee form -->
-            <p>You have to nominate {{ players_required }} players</p>
-            <form method="post" id=nominate-form action={{ url_for('nominate', game=game) }}>
-                <ul>
-                {% for (name, player) in players %}
-                <li>
-                    <input type=checkbox name={{ loop.index }} value={{ player.id }}>{{ name }}<br>
-                </li>
-                {% endfor %}
-                </ul>
-                <input type=submit name=nominate value=Nominate>
-            </form>
-            {% else %}
-            <p> {{ leader }} hasn't nominated a team yet</p>
-            {% endif %}
-        {% else %}
-        <p>{{ leader }} has nominated:</p>
-        <ul class=nominees>
-            {% for nominee in nominees %}
-            <li>{{ nominee.name }}</li>
             {% endfor %}
-        </ul>
-        <form method="post" id=turn-vote action={{ url_for('turn_vote', game=game) }}>
-            <input type=submit name=approve value=Approve>
-            <input type=submit name=reject value=Reject>
+            </ul>
+            <input type=submit name=nominate value=Nominate>
         </form>
+        {% else %}
+        <p> {{ leader }} hasn't nominated a team yet</p>
         {% endif %}
-    </div>
-
-    <div id=chat>
-        <h1>Chat</h1>
-        <div id=form-area>
-            <textarea form=post-message-form required rows="10" cols="50" name=body></textarea>
-            <form method="post" id=post-message-form action={{ url_for('submit_post', game=game) }}>
-                <input type=submit value=Post>
-            </form>
-        </div>
-
-        <ul>
-        {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
-            <li>
-                <p class=author>{{ author }} @ {{ post.created_at.strftime("%y-%m-%d %H:%M") }} during mission {{ post.mission_number }}</p>
-                <p>{{ post.body }}</p>
-            </li>
+    {% else %}
+    <p>{{ leader }} has nominated:</p>
+    <ul class=nominees>
+        {% for nominee in nominees %}
+        <li>{{ nominee.name }}</li>
         {% endfor %}
-        </ul>
+    </ul>
+    <form method="post" id=turn-vote action={{ url_for('turn_vote', game=game) }}>
+        <input type=submit name=approve value=Approve>
+        <input type=submit name=reject value=Reject>
+    </form>
+    {% endif %}
+{% endblock %}
+
+{% block chat %}
+    <div id=form-area>
+        <textarea form=post-message-form required rows="10" cols="50" name=body></textarea>
+        <form method="post" id=post-message-form action={{ url_for('submit_post', game=game) }}>
+            <input type=submit value=Post>
+        </form>
     </div>
+
+    {{ super() }}
 {% endblock %}

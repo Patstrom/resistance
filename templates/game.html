@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Game{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='game.css') }}">
+{% endblock%}
+
+{% block container %}
+    <div id=player-list>
+        <h1 class=header>Players</h1>
+    {% block player-list %}
+        <ul>
+        {% for (name, player) in players %}
+            <li>
+                {{ name }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endblock %}
+    </div>
+
+    <div id=current-turn>
+        <h1 class=header>Current Turn</h1>
+    {% block current-turn %}{% endblock %}
+    </div>
+
+    <div id=chat>
+        <h1>Chat</h1>
+    {% block chat %}
+        <ul>
+        {% for (author, post) in posts|sort(attribute='Posts.created_at', reverse=True) %}
+            <li>
+                <p class=author>{{ author }} @ {{ post.created_at.strftime("%y-%m-%d %H:%M") }} during mission {{ post.mission_number }}</p>
+                <p>{{ post.body }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endblock %}
+    </div>
+{% endblock %}
