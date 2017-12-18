@@ -135,6 +135,11 @@ def game(game=None):
     # Check if the visitor is logged in and is part of the game
     if user_is_player:
         user_is_spy = db_session.query(Players.is_spy).join(Users).filter(Players.game_id == game).filter(Users.id == user).scalar()
+        # Show spies who all spies are
+        if user_is_spy:
+            for (name, _) in players:
+                name = name + " (spy)"
+
         user_is_leader = [user == player.user_id for (_, player) in players if player.id == current_turn.leader]
         players_required = db_session.query(Missions.people_required).join(Turns) \
                 .filter(Turns.id == current_turn.id).scalar()
