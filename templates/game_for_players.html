@@ -1,40 +1,40 @@
 {% extends "game.html" %}
 
-{% block player-list %}
+{% block player_list %}
 {{ super() }}
 {% endblock %}
 
-{% block current-turn %}
+{% block current_turn %}
     <!-- Show the chosen team if it is chosen -->
     <!-- Allow team members to vote (only spies can vote fail) -->
     {% if nominees|length == 0 %}
         {% if user_is_leader %}
-        <!-- nominee form -->
-        <p>You have to nominate {{ players_required }} players</p>
-        <form method="post" id=nominate-form action={{ url_for('nominate', game=game) }}>
-            <ul>
-            {% for (name, player) in players %}
-            <li>
-                <input type=checkbox name={{ loop.index }} value={{ player.id }}>{{ name }}<br>
-            </li>
-            {% endfor %}
-            </ul>
-            <input type=submit name=nominate value=Nominate>
-        </form>
+            <!-- nominee form -->
+            <p>You have to nominate {{ players_required }} players</p>
+            <form method="post" id=nominate-form action={{ url_for('nominate', game=game) }}>
+                <ul>
+                {% for (name, player) in players %}
+                <li>
+                    <input type=checkbox name={{ loop.index }} value={{ player.id }}>{{ name }}<br>
+                </li>
+                {% endfor %}
+                </ul>
+                <input type=submit name=nominate value=Nominate>
+            </form>
         {% else %}
-        <p> {{ leader }} hasn't nominated a team yet</p>
+            <p>{{ leader }} hasn't nominated a team yet</p>
         {% endif %}
     {% else %}
-    <p>{{ leader }} has nominated:</p>
-    <ul class=nominees>
-        {% for nominee in nominees %}
-        <li>{{ nominee.name }}</li>
-        {% endfor %}
-    </ul>
-    <form method="post" id=turn-vote action={{ url_for('turn_vote', game=game) }}>
-        <input type=submit name=approve value=Approve>
-        <input type=submit name=reject value=Reject>
-    </form>
+        <p>{{ leader }} has nominated:</p>
+        <ul class=nominees>
+            {% for nominee in nominees %}
+            <li>{{ nominee.name }}</li>
+            {% endfor %}
+        </ul>
+        <form method="post" id=turn-vote action={{ url_for('turn_vote', game=game) }}>
+            <input type=submit name=approve value=Approve>
+            <input type=submit name=reject value=Reject>
+        </form>
     {% endif %}
 {% endblock %}
 

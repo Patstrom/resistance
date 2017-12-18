@@ -1,10 +1,10 @@
 {% extends "game.html" %}
 
-{% block player-list %}
+{% block player_list %}
 {{ super() }}
 {% enblock %}
 
-{% block current-turn %}
+{% block current_turn %}
     {% if nominees|length == 0 %}
         <p> {{ leader }} hasn't nominated a team yet</p>
     {% else %}

@@ -8,7 +8,7 @@
 {% block container %}
     <div id=player-list>
         <h1 class=header>Players</h1>
-    {% block player-list %}
+    {% block player_list %}
         <ul>
         {% for (name, player) in players %}
             <li>
@@ -21,7 +21,7 @@
 
     <div id=current-turn>
         <h1 class=header>Current Turn</h1>
-    {% block current-turn %}{% endblock %}
+    {% block current_turn %}{% endblock %}
     </div>
 
     <div id=chat>
