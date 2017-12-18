@@ -257,6 +257,32 @@ def missions(game=None):
     game = db_session.query(Games).filter(Games.id == game).scalar()
     return render_template('missions.html', missions=missions, game=game)
 
+@app.route("/<game>/mission-vote", methods=["GET", "POST"])
+def mission_vote(game=None):
+    if check_game(game):
+        return redirect(url_for('index'))
+    if session.get('user', None) is not None:
+        if request.method == "POST":
+            player_id = db_session.query(Players.id).filter(Players.user_id == session['user'], Players.game_id == game).scalar()
+            if player_id is None: # If user isn't part of the game
+                return redirect(url_for('game', game=game))
+
+            current_mission = db_session.query(Missions).filter(Missions.game_id == game) \
+                    .order_by(Missions.id.desc()).limit(1).scalar()
+            if current_mission.is_over or not current_mission.team_is_chosen:
+                return redirect(url_for('game', game=game)) # Don't allow voting on an old turn
+
+            fail = False
+            if request.form.get('fail', None) is not None:
+                fail = True
+            vote = MissionVotes(mission_id=current_mission.id,
+                    player_id=player_id,
+                    fail=fail)
+            db_session().merge(vote)
+            db_session().commit()
+
+    return redirect(url_for('game', game=game))
+
 @app.route("/<game>/turn-vote", methods=["GET", "POST"])
 def turn_vote(game=None):
     if check_game(game):
@@ -264,8 +290,15 @@ def turn_vote(game=None):
     if session.get('user', None) is not None:
         if request.method == "POST":
             player_id = db_session.query(Players.id).filter(Players.user_id == session['user'], Players.game_id == game).scalar()
-            current_turn = db_session.query(Turns.id).join(Missions).filter(Missions.game_id == game) \
-                .order_by(Turns.id.desc()).limit(1).scalar()
+            if player_id is None: # If user isn't part of the game
+                return redirect(url_for('game', game=game))
+
+            current_mission = db_session.query(Missions).filter(Missions.game_id == game) \
+                    .order_by(Missions.id.desc()).limit(1).scalar()
+            if current_mission.is_over or current_mission.team_is_chosen:
+                return redirect(url_for('game', game=game)) # Don't allow voting on an old turn
+            current_turn = db_session.query(Turns.id).filter(Turns.mission_id == current_mission.id) \
+                .scalar()
 
             approve = False
             if request.form.get('approve', None) is not None:

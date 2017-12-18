@@ -31,10 +31,24 @@
             <li>{{ nominee }}</li>
             {% endfor %}
         </ul>
+
+        {% if team_is_chosen %}
+            {% if user_is_nominated %}
+                <form method="post" id=mission-vote action={{ url_for('mission_vote', game=game) }}>
+                    <input type=submit name=success value=Success>
+                    {% if user_is_spy %}
+                    <input type=submit name=fail value=Fail>
+                    {% endif %}
+                </form>
+            {% else %}
+                <p>The mission is being carried out</p>
+            {% endif %}
+        {% else %}
         <form method="post" id=turn-vote action={{ url_for('turn_vote', game=game) }}>
             <input type=submit name=approve value=Approve>
             <input type=submit name=reject value=Reject>
         </form>
+        {% endif %}
     {% endif %}
 {% endblock %}
 
