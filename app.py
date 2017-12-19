@@ -261,12 +261,14 @@ def missions(game=None):
         for mission in missions:
             for turn in turns:
                 turn.votes = [(name+" (spy)", approve) if is_spy else (name, approve) for (name, approve, is_spy) in turn.votes]
-                print("turnvotes:", turn.votes)
                 turn.nominees = [name+" (spy)" if is_spy else name for (name, is_spy) in turn.nominees]
-                print("nominees",turn.nominees)
-
             mission.votes = [(name+" (spy)", fail) if is_spy else (name, fail) for (name, fail, is_spy) in mission.votes]
-            print(mission.votes)
+    else:
+        for mission in missions:
+            for turn in turns:
+                turn.votes = [(name, approve) if is_spy else (name, approve) for (name, approve, is_spy) in turn.votes]
+                turn.nominees = [name if is_spy else name for (name, is_spy) in turn.nominees]
+            mission.votes = [(name, fail) if is_spy else (name, fail) for (name, fail, is_spy) in mission.votes]
 
     return render_template('missions.html', missions=missions, game=game)
 
