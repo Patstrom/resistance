@@ -242,19 +242,32 @@ def missions(game=None):
         turns = db_session.query(Turns) \
             .filter(Turns.mission_id == mission.id).order_by(Turns.id.asc()).all()
         for turn in turns:
-            turn_votes = db_session.query(Users.name, TurnVotes.approve).select_from(TurnVotes) \
+            turn_votes = db_session.query(Users.name, TurnVotes.approve, Players.is_spy).select_from(TurnVotes) \
                     .join(Players).join(Users).filter(TurnVotes.turn_id==turn.id).all()
             turn.votes = turn_votes
 
-            nominees = db_session.query(Users.name).join(Players).join(Nominees).filter(Nominees.turn_id == turn.id).all()
+            nominees = db_session.query(Users.name, Players.is_spy).join(Players).join(Nominees).filter(Nominees.turn_id == turn.id).all()
             turn.nominees = nominees
 
-        mission_votes = db_session.query(Users.name, MissionVotes.fail).select_from(MissionVotes) \
+        mission_votes = db_session.query(Users.name, MissionVotes.fail, Players.is_spy).select_from(MissionVotes) \
                 .join(Players).join(Users).filter(MissionVotes.mission_id == mission.id).all()
         mission.votes = mission_votes
         mission.turns = turns
 
     game = db_session.query(Games).filter(Games.id == game).scalar()
+
+    # If game is over show who are spies
+    if game.is_over:
+        for mission in missions:
+            for turn in turns:
+                turn.votes = [(name+" (spy)", approve) if is_spy else (name, approve) for (name, approve, is_spy) in turn.votes]
+                print("turnvotes:", turn.votes)
+                turn.nominees = [name+" (spy)" if is_spy else name for (name, is_spy) in turn.nominees]
+                print("nominees",turn.nominees)
+
+            mission.votes = [(name+" (spy)", fail) if is_spy else (name, fail) for (name, fail, is_spy) in mission.votes]
+            print(mission.votes)
+
     return render_template('missions.html', missions=missions, game=game)
 
 @app.route("/<game>/mission-vote", methods=["GET", "POST"])

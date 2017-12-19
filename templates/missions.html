@@ -12,12 +12,12 @@
     <div id=mission-result>
         <h2>Mission Result</h2>
             <ul>
-            {% for vote in mission.votes %}
+            {% for (name, fail) in mission.votes %}
             <li>
                 {% if game.is_over %} 
-                    {{ vote.name }} voted {{ "fail" if vote.fail else "success" }}
+                    {{ name }} voted {{ "fail" if fail else "success" }}
                 {% else %}
-                    Anonymous voted {{ "fail" if vote.fail else "success" }}
+                    Anonymous voted {{ "fail" if fail else "success" }}
                 {% endif %}
             </li>
             {% endfor %}
@@ -33,13 +33,13 @@
                 <h3>Nominees</h3>
                     <ul class=nominees>
                     {% for nominee in turn.nominees %}
-                    <li>{{ nominee.name }}</li>
+                    <li>{{ nominee }}</li>
                     {% endfor %}
                     </ul>
                 <h3>Votes</h3>
                 <ul>
-                    {% for vote in turn.votes %}
-                    <li>{{ vote.name }} {{ "approved" if vote.approve else "rejected" }}</li>
+                    {% for (name, approve) in turn.votes %}
+                    <li>{{ name }} {{ "approved" if approve else "rejected" }}</li>
                     {% endfor %}
                 </ul>
                 </div>
