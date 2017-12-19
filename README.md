@@ -24,7 +24,7 @@ SECRET_KEY = "Not gonna happen"
 ## TODO
 
 - [x] Create a game.html template for better readibility
-- [] Can probably template everything more
+- [ ] Can probably template everything more
 - [x] Add support for mission\_votes
-- [] Style login and signup
-- [] Create a cronjob that handles the "night cycles"
+- [ ] Style login and signup
+- [ ] Create a cronjob that handles the "night cycles"
