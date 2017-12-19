@@ -44,10 +44,13 @@
                 <p>The mission is being carried out</p>
             {% endif %}
         {% else %}
-        <form method="post" id=turn-vote action={{ url_for('turn_vote', game=game) }}>
-            <input type=submit name=approve value=Approve>
-            <input type=submit name=reject value=Reject>
-        </form>
+            {% if user_vote is not none %}
+            <p>You have voted {{ "approve" if user_vote else "reject" }}</p>
+            {% endif %}
+            <form method="post" id=turn-vote action={{ url_for('turn_vote', game=game) }}>
+                <input type=submit name=approve value=Approve>
+                <input type=submit name=reject value=Reject>
+            </form>
         {% endif %}
     {% endif %}
 {% endblock %}

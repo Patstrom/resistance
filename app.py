@@ -147,6 +147,14 @@ def game(game=None):
         user_is_leader = user in [player.user_id for (_, player) in players if player.id == current_turn.leader]
         user_is_nominated = user in [player.user_id for (_, player) in players if player.id in nominee_ids]
 
+        # Determine user's vote, if there is one
+        user_vote_query = db_session.query(TurnVotes.approve).join(Players) \
+                .filter(TurnVotes.turn_id == current_turn.id, Players.user_id == user)
+        user_has_voted = user_vote_query.count() > 0
+        user_vote = None
+        if user_has_voted:
+            user_vote = user_vote_query.scalar()
+
         (players_required, team_is_chosen) = db_session.query(
                 Missions.people_required, Missions.team_is_chosen).join(Turns) \
                 .filter(Turns.id == current_turn.id).one()
@@ -154,7 +162,7 @@ def game(game=None):
         return render_template("game_for_players.html", players=players, posts=posts,
                 game=game, nominees=nominee_names, leader=leader, current_turn=current_turn,
                 user_is_spy=user_is_spy, user_is_leader=user_is_leader, players_required=players_required,
-                team_is_chosen=team_is_chosen, user_is_nominated=user_is_nominated)
+                team_is_chosen=team_is_chosen, user_is_nominated=user_is_nominated, user_vote=user_vote)
 
     return render_template("game_for_anonymous.html", players=players, posts=posts,
             game=game, nominees=nominee_names, leader=leader)
