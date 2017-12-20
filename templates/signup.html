@@ -6,8 +6,10 @@
 {% endblock %}
 
 {% block container %}
-    <p>Usernames are unique on the lowercase variants</p>
-    <p>Your password will not be stored in plaintext. If you lose it you lose access to your account</p>
+    <div id=signup-info>
+        <p>Usernames are unique and will be converted to lowercase.</p>
+        <p>Your password will not be stored in plaintext. If you lose it you lose access to your account</p>
+    </div>
 
     <form method="post" class=credentials-form id=signup-form>
         <input type=text name=username placeholder="username"><br>
