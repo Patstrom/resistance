@@ -16,7 +16,7 @@ pip install -r requirements.txt
 There are 3 environment variables
 
 | Environment Variable | Comment                                                |
-|----------------------+--------------------------------------------------------|
+|----------------------|--------------------------------------------------------|
 | DEBUG                | 'True' if debug output is wanted, otherwise any string |
 | SECRET\_KEY          | The secret key used for sessions management            |
 | DATABASE\_URL        | The 'postgres://user@host/database' url                |
