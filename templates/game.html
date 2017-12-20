@@ -24,6 +24,10 @@
     {% block current_turn %}{% endblock %}
     </div>
 
+    <div id=mission-link>
+        <p>Find a summary of all missions <a href="{{ url_for('missions', game=game) }}">here</a></p>
+    </div>
+
     <div id=chat>
         <h1>Chat</h1>
     {% block chat %}
