@@ -2,7 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('postgresql://patrik@localhost/resistance', convert_unicode=True)
+import os
+DB_DSN = os.environ["DSN"]
+engine = create_engine('postgresql://{}'.format(DB_DSN), convert_unicode=True)
 Base = declarative_base()
 Base.metadata.reflect(engine)
 
