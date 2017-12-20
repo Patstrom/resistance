@@ -7,24 +7,30 @@ to create my own The Resistance game online, even though I have absolutetly zero
 with web design and front-end. I was wrong. But now I am stuck.
 
 ## Build & Run
-```Bash
-pip install --user flask
-```
+Install requirements from requirements.txt
 
 ```Bash
-FLASK_ENV_FILE=.env python main.py
+pip install -r requirements.txt
 ```
 
+There are 3 environment variables
+
+| Environment Variable | Comment                                                |
+|----------------------+--------------------------------------------------------|
+| DEBUG                | 'True' if debug output is wanted, otherwise any string |
+| SECRET\_KEY          | The secret key used for sessions management            |
+| DATABASE\_URL        | The 'postgres://user@host/database' url                |
+
+
+```Bash
+gunicorn app:app
 ```
-#.env
-DEBUG = True
-SECRET_KEY = "Not gonna happen"
-```
+
 
 ## TODO
 
 - [x] Create a game.html template for better readibility
 - [x] Can probably template everything more (This wasn't really true)
 - [x] Add support for mission\_votes
-- [ ] Style login and signup
+- [x] Style login and signup
 - [ ] Create a cronjob that handles the "night cycles"
