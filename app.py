@@ -8,7 +8,7 @@ from resistance_rules import *
 app = Flask(__name__)
 
 import os
-app.config["DEBUG"] = os.environ["DEBUG"]
+app.config["DEBUG"] = True if os.environ["DEBUG"] == "True" else False
 app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
 from database import load_session
