@@ -25,7 +25,16 @@ ul {
 
 .container {
     margin: auto;
+    margin-top: 5%;
     width: 50em;
+}
+
+#navbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin-top: 2em;
+    margin-right: 10em;
 }
 
 #navbar li {
