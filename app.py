@@ -6,7 +6,10 @@ import random
 from resistance_rules import *
 
 app = Flask(__name__)
-app.config.from_envvar('FLASK_ENV_FILE')
+
+import os
+app.config["DEBUG"] = os.environ["DEBUG"]
+app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
 from database import load_session
 db_session = load_session()
