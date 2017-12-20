@@ -1,28 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
- 
-<head>
-    <title>Login</title>
- 
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-</head>
- 
-<body>
- 
-    <div class="container">
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
 
-        <form method="post" class=form id=login-form>
-            <input type=text name=username placeholder="username"><br>
-            <input type=password name=password placeholder="password"><br>
-            <input type=submit value=Login>
-        </form>
+{% block container %}
+    <form method="post" class=form id=login-form>
+        <input type=text name=username placeholder="username"><br>
+        <input type=password name=password placeholder="password"><br>
+        <input type=submit value=Login>
+    </form>
 
-        {% if failed %}
-        <p id=failed-login><strong>Invalid credentials</strong></p>
-        {% endif %}
-
-    </div>
-
-</body>
- 
-</html>
+    {% if failed %}
+    <p id=failed-login><strong>Invalid credentials</strong></p>
+    {% endif %}
+{% endblock %}
