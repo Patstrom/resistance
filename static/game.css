@@ -56,7 +56,7 @@
 }
 
 #navbar a:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 /* The game.html chat section */

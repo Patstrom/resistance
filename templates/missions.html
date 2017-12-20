@@ -6,6 +6,7 @@
 {% endblock%}
 
 {% block container %}
+<h1 id=game-header><a href="{{ url_for('game', game=game.id) }}">{{ game.name }}</a></h1>
     {% for mission in missions %}
     <h1>Mission {{ loop.index }} {% if mission.is_over %}({{ "Success" if mission.success else "Failed" }}){% endif %}</h1>
     {% if mission.vote is not none %}

@@ -1,3 +1,17 @@
+#game-header a {
+    text-decoration: none;
+    color: #9999ff;
+    border-bottom: 1px #c5c5ff dotted;
+}
+
+#game-header a:visited {
+    text-decoration: none;
+}
+
+#game-header a:hover {
+    text-decoration: none;
+}
+
 .turn-summary ul > li {
     display: inline-block;
 }
