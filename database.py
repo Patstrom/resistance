@@ -3,8 +3,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 import os
-DB_DSN = os.environ["DSN"]
-engine = create_engine('postgresql://{}'.format(DB_DSN), convert_unicode=True)
+database_url = os.environ["DATABASE_URL"]
+engine = create_engine(database_url, convert_unicode=True)
 Base = declarative_base()
 Base.metadata.reflect(engine)
 
