@@ -2,13 +2,14 @@
 {% block title %}Login{% endblock %}
 {% block head %}
     {{ super() }}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='credentials.css') }}">
 {% endblock %}
 
 {% block container %}
     <p>Usernames are unique on the lowercase variants</p>
     <p>Your password will not be stored in plaintext. If you lose it you lose access to your account</p>
 
-    <form method="post" class=form id=signup-form>
+    <form method="post" class=credentials-form id=signup-form>
         <input type=text name=username placeholder="username"><br>
         <input type=password name=password placeholder="password"><br>
         <input type=submit value="Sign up">

@@ -2,10 +2,11 @@
 {% block title %}Login{% endblock %}
 {% block head %}
     {{ super() }}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='credentials.css') }}">
 {% endblock %}
 
 {% block container %}
-    <form method="post" class=form id=login-form>
+    <form method="post" class=credentials-form id=login-form>
         <input type=text name=username placeholder="username"><br>
         <input type=password name=password placeholder="password"><br>
         <input type=submit value=Login>
