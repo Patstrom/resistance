@@ -92,7 +92,7 @@ def create_game():
     else:
         creator = session.get('user')
         name = request.form["game-name"]
-        if creator is not None and not name:
+        if creator is not None and name:
             # Create the game
             game = Games(creator=creator,
                     name = name)
