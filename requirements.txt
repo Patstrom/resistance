@@ -12,3 +12,4 @@ passlib == 1.7.1
 
 gunicorn==19.7.1
 psycopg2==2.7.3.2
+APScheduler==3.5.0
