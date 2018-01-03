@@ -35,7 +35,7 @@ def advance_games():
             number_of_successful_missions = db_session.query(Missions).filter(Missions.game_id==game.id,
                 Missions.success==True).count()
             number_of_failed_missions = number_of_missions - number_of_successful_missions
-     
+
             # Get votes
             mission_votes = db_session.query(MissionVotes).filter(MissionVotes.mission_id==current_mission.id).all()
 
@@ -62,7 +62,7 @@ def advance_games():
                 game.is_over = True
                 db_session().merge(game)
                 continue # This game is done, continue with next one
-            
+
             # Add next mission
             print("Adding new mission for game: {}".format(game.id))
             # If we are adding the fourth mission for 7 or more players it should require two people
