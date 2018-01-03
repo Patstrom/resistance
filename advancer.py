@@ -17,6 +17,8 @@ from database import load_session
 db_session = load_session()
 from models import *
 
+import random
+
 def advance_games():
     # Get all ongoing games
     games = db_session.query(Games).filter(Games.started == True, Games.is_over == False).all()
@@ -54,13 +56,13 @@ def advance_games():
             db_session().merge(current_mission)
 
             # Check win condition
-            number_of_players = 5
             missions_required = len(number_of_players_for_mission[number_of_players]) / 2 + 1
             if (number_of_successful_missions >= missions_required
                 or number_of_failed_missions >= missions_required):
                 print("Game: {} is over".format(game.id))
                 game.is_over = True
                 db_session().merge(game)
+                db_session().commit()
                 continue # This game is done, continue with next one
 
             # Add next mission
@@ -89,6 +91,20 @@ def advance_games():
 
             current_turn = turns[-1]
             print("current turn: {}".format(current_turn.id))
+
+            # See if we have nominees. Nominees aren't inserted unless there are exactly
+            # the right amount.
+            # If there are no nominees we add some.
+            nominees = db_session.query(Nominees).filter(Nominees.turn_id==current_turn.id).count()
+            if nominees == 0:
+                print("Not enough nominees. Choosing at random.")
+                players = db_session.query(Players).filter(Players.game_id == game.id).all()
+                players_to_nominate = random.sample(players, current_mission.people_required)
+                nominees = [Nominees(turn_id=current_turn.id,
+                    player_id=player.id) for player in players_to_nominate]
+                db_session().bulk_save_objects(nominees)
+                db_session().commit()
+                continue # Let people vote
 
             # Get all votes and see if it passes
             turn_votes = db_session.query(TurnVotes.approve).filter(TurnVotes.turn_id == current_turn.id) \
