@@ -36,3 +36,4 @@ gunicorn app:app
 - [x] Create a cronjob that handles the "night cycles"
 - [ ] Make advancer post a summary of changes to game (by a name that you blacklist for signup)
 - [ ] Add some buttons to filter posts by missions
+- [ ] Add a rules page that explains avalon as well as default behavior for this app (midnight cycles, random nominees, votes etc)
