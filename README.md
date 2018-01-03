@@ -34,3 +34,5 @@ gunicorn app:app
 - [x] Add support for mission\_votes
 - [x] Style login and signup
 - [x] Create a cronjob that handles the "night cycles"
+- [ ] Make advancer post a summary of changes to game (by a name that you blacklist for signup)
+- [ ] Add some buttons to filter posts by missions
