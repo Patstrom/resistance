@@ -33,4 +33,4 @@ gunicorn app:app
 - [x] Can probably template everything more (This wasn't really true)
 - [x] Add support for mission\_votes
 - [x] Style login and signup
-- [ ] Create a cronjob that handles the "night cycles"
+- [x] Create a cronjob that handles the "night cycles"
