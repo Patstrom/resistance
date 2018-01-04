@@ -1,10 +1,10 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-from advancer import *
+from advancer import advance_games
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', hour=0)
+@sched.scheduled_job('cron', hour=0, minute=10)
 def scheduled_job():
-    advancer.advance_games()
+    advance_games()
 
 sched.start()
