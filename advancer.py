@@ -96,7 +96,7 @@ def advance_games():
             # the right amount.
             # If there are no nominees we add some.
             nominees = db_session.query(Nominees).filter(Nominees.turn_id==current_turn.id).count()
-            if nominees == 0:
+            if nominees != current_mission.people_required:
                 print("Not enough nominees. Choosing at random.")
                 players = db_session.query(Players).filter(Players.game_id == game.id).all()
                 players_to_nominate = random.sample(players, current_mission.people_required)
