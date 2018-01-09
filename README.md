@@ -6,6 +6,8 @@ We just started a round online (in skype mainly) and I figured it shouldn't be t
 to create my own The Resistance game online, even though I have absolutetly zero experience
 with web design and front-end. I was wrong. But now I am stuck.
 
+Currently deployed to: https://resistance-with-friends.herokuapp.com/
+
 ## Build & Run
 Install requirements from requirements.txt
 
@@ -36,4 +38,4 @@ gunicorn app:app
 - [x] Create a cronjob that handles the "night cycles"
 - [ ] Make advancer post a summary of changes to game (by a name that you blacklist for signup)
 - [ ] Add some buttons to filter posts by missions
-- [ ] Add a rules page that explains avalon as well as default behavior for this app (midnight cycles, random nominees, votes etc)
+- [ ] Add a rules page that explains the game as well as default behavior for this app (midnight cycles, random nominees, votes etc)
